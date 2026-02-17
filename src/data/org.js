@@ -6,7 +6,8 @@
   primaryCta: { label: "Donate", href: "/get-involved#donate" },
   secondaryCta: { label: "Volunteer", href: "/get-involved#volunteer" },
 
-  donateUrl: "https://www.gofundme.com/f/wesoamo-childcancer-fund",
+  donateUrl:
+    "https://wa.me/233555945515?text=Hello%20Wesoamo%20Child%20Cancer%20Foundation%2C%20I%20want%20to%20donate.%20Please%20share%20the%20available%20donation%20options.",
 
   phoneRaw: "0555945515",
   phoneE164: "+233555945515",
