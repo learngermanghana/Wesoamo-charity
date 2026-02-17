@@ -1,0 +1,12 @@
+# Wesoamo Child Cancer Foundation robots policy
+User-agent: *
+Allow: /
+
+# Prevent crawling of parameterized duplicates
+Disallow: /*?*
+
+# Crawl-delay respected by some bots (e.g., Bing)
+Crawl-delay: 5
+
+Host: https://www.wesoamochildcancer.com
+Sitemap: https://www.wesoamochildcancer.com/sitemap.xml
