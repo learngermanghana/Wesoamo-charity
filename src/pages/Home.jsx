@@ -8,6 +8,7 @@ import HomeGalleryPreview from "../components/HomeGalleryPreview";
 import Testimonials from "../components/Testimonials";
 import Contact from "../components/Contact";
 import HomeBlogHighlight from "../components/HomeBlogHighlight";
+import FeaturedVideos from "../components/FeaturedVideos";
 
 import { gallery } from "../data/galleryAuto";
 
@@ -25,6 +26,11 @@ export default function Home() {
       <Programs />
       <Impact />
       <HomeBlogHighlight />
+      <FeaturedVideos
+        title="Watch our story"
+        subtitle="Highlights from TV interviews and community awareness features."
+        sectionClassName="section"
+      />
       <HomeGalleryPreview items={gallery} />
       <Testimonials />
       <Contact />

@@ -54,7 +54,9 @@ export default function BlogPage() {
         </Container>
       </section>
 
-      <section className="section">
+      <FeaturedVideos />
+
+      <section className="section section--soft">
         <Container>
           <div className="sectionHead">
             <h2>Featured videos</h2>
