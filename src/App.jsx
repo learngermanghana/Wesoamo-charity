@@ -9,6 +9,7 @@ import GetInvolvedPage from "./pages/GetInvolvedPage";
 import TransparencyPage from "./pages/TransparencyPage";
 import VolunteerPage from "./pages/VolunteerPage";
 import RequestSupportPage from "./pages/RequestSupportPage";
+import BlogPage from "./pages/BlogPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/transparency" element={<TransparencyPage />} />
           <Route path="/volunteer" element={<VolunteerPage />} />
           <Route path="/request-support" element={<RequestSupportPage />} />
+          <Route path="/blog" element={<BlogPage />} />
 
           {/* fallback */}
           <Route path="*" element={<NotFoundPage />} />

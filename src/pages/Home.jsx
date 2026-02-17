@@ -7,6 +7,7 @@ import Impact from "../components/Impact";
 import HomeGalleryPreview from "../components/HomeGalleryPreview";
 import Testimonials from "../components/Testimonials";
 import Contact from "../components/Contact";
+import HomeBlogHighlight from "../components/HomeBlogHighlight";
 
 import { gallery } from "../data/galleryAuto";
 
@@ -23,6 +24,7 @@ export default function Home() {
       <AboutBlock />
       <Programs />
       <Impact />
+      <HomeBlogHighlight />
       <HomeGalleryPreview items={gallery} />
       <Testimonials />
       <Contact />
