@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import SEO from "../components/SEO";
 import Container from "../components/Container";
 import { fetchBlogPosts, formatPostDate } from "../data/blogFeed";
+import { featuredVideos, toYouTubeEmbedUrl } from "../data/mediaVideos";
 
 export default function BlogPage() {
   const [posts, setPosts] = useState([]);
@@ -49,18 +50,54 @@ export default function BlogPage() {
       <section className="pageHead">
         <Container>
           <h1>Blog</h1>
-          <p className="muted">Latest posts from https://blog.wesoamochildcancer.com/feed.xml.</p>
+          <p className="muted">Latest stories and video features from Wesoamo Child Cancer Foundation.</p>
         </Container>
       </section>
 
       <section className="section">
         <Container>
+          <div className="sectionHead">
+            <h2>Featured videos</h2>
+            <p>Watch these interviews and story features from YouTube.</p>
+          </div>
+
+          <div className="videoGrid">
+            {featuredVideos.map((video) => (
+              <article key={video.id} className="card card--video">
+                <div className="videoFrameWrap">
+                  <iframe
+                    className="videoFrame"
+                    src={toYouTubeEmbedUrl(video.id)}
+                    title={video.title}
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                  />
+                </div>
+                <h3>{video.title}</h3>
+                <a className="textLink" href={video.url} target="_blank" rel="noreferrer">
+                  Watch on YouTube →
+                </a>
+              </article>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      <section className="section section--soft">
+        <Container>
+          <div className="sectionHead">
+            <h2>Blog posts</h2>
+            <p>Latest posts from https://blog.wesoamochildcancer.com/feed.xml.</p>
+          </div>
+
           {loading && <p className="muted">Loading blog posts...</p>}
 
           {!loading && error && (
             <div className="note">
               <strong>We could not load posts right now.</strong>
-              <p className="tiny">{error} Please try again shortly.</p>
+              <p className="tiny">{error} Showing fallback updates instead.</p>
             </div>
           )}
 
