@@ -1,7 +1,7 @@
-﻿import { useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 
 export default function GalleryGrid({ items }) {
-  const [active, setActive] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(-1);
 
   const safeItems = useMemo(() => {
     return (items || []).map((it, idx) => ({
@@ -10,24 +10,57 @@ export default function GalleryGrid({ items }) {
     }));
   }, [items]);
 
+  const active = activeIndex >= 0 ? safeItems[activeIndex] : null;
+
   function close() {
-    setActive(null);
+    setActiveIndex(-1);
   }
+
+  function showPrev() {
+    setActiveIndex((current) => {
+      if (current < 0 || safeItems.length === 0) return -1;
+      return (current - 1 + safeItems.length) % safeItems.length;
+    });
+  }
+
+  function showNext() {
+    setActiveIndex((current) => {
+      if (current < 0 || safeItems.length === 0) return -1;
+      return (current + 1) % safeItems.length;
+    });
+  }
+
+  useEffect(() => {
+    if (!active) return undefined;
+
+    function onKeyDown(event) {
+      if (event.key === "Escape") close();
+      if (event.key === "ArrowLeft") showPrev();
+      if (event.key === "ArrowRight") showNext();
+    }
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [active]);
 
   return (
     <>
       <div className="galleryGrid">
-        {safeItems.map((it) => (
+        {safeItems.map((it, idx) => (
           <button
             key={it.key}
             className="galleryCard"
-            onClick={() => setActive(it)}
+            onClick={() => setActiveIndex(idx)}
             type="button"
             aria-label={"Open photo: " + (it.alt || "gallery image")}
           >
             <div className="galleryMedia">
-              {/* If image missing, browser shows broken icon; caption still visible */}
-              <img src={it.src} alt={it.alt || ""} loading="lazy" />
+              <img src={it.src} alt={it.alt || ""} loading="lazy" decoding="async" />
             </div>
             <div className="galleryCaption">
               {it.caption || "—"}
@@ -48,6 +81,16 @@ export default function GalleryGrid({ items }) {
             </div>
 
             {active.caption && <div className="lightboxCaption">{active.caption}</div>}
+
+            <div className="lightboxNav" aria-label="Photo navigation">
+              <button className="btn btn--outline" type="button" onClick={showPrev}>
+                Previous
+              </button>
+              <span className="tiny">Use ← → keys to browse</span>
+              <button className="btn btn--outline" type="button" onClick={showNext}>
+                Next
+              </button>
+            </div>
           </div>
         </div>
       )}

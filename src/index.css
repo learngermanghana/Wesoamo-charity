@@ -367,6 +367,10 @@ input:focus, select:focus, textarea:focus{
   box-shadow: 0 10px 22px rgba(2,6,23,.06);
   cursor: pointer;
 }
+.galleryCard:focus-visible{
+  outline: 3px solid rgba(15,118,110,.45);
+  outline-offset: 2px;
+}
 .galleryMedia{
   position: relative;
   width: 100%;
@@ -430,6 +434,13 @@ input:focus, select:focus, textarea:focus{
   padding: .9rem 1rem 1.1rem;
   color: rgba(15,23,42,.78);
   font-weight: 850;
+}
+.lightboxNav{
+  padding: 0 1rem 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
 }
 
 @media (max-width: 980px){
