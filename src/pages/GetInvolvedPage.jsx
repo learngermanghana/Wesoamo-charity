@@ -41,16 +41,11 @@ export default function GetInvolvedPage() {
             </p>
 
             <div className="note">
-              <strong>Best option for international donors:</strong> Donate via GoFundMe.
-              <br />
-              <strong>Local support:</strong> WhatsApp us for MoMo / other options.
+              <strong>Need donation options?</strong> WhatsApp us for MoMo / other available channels.
             </div>
 
             <div className="btnRow" style={{ marginTop: ".8rem" }}>
-              <a className="btn btn--primary" href={org.donateUrl} target="_blank" rel="noreferrer">
-                Donate on GoFundMe
-              </a>
-              <a className="btn btn--outline" href={waDonate} target="_blank" rel="noreferrer">
+              <a className="btn btn--primary" href={waDonate} target="_blank" rel="noreferrer">
                 Donate via WhatsApp
               </a>
               <a className="btn btn--outline" href={org.facebook} target="_blank" rel="noreferrer">
