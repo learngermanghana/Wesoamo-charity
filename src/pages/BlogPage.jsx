@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import SEO from "../components/SEO";
 import Container from "../components/Container";
 import { fetchBlogPosts, formatPostDate } from "../data/blogFeed";
+import FeaturedVideos from "../components/FeaturedVideos";
 
 export default function BlogPage() {
   const [posts, setPosts] = useState([]);
@@ -49,18 +50,25 @@ export default function BlogPage() {
       <section className="pageHead">
         <Container>
           <h1>Blog</h1>
-          <p className="muted">Latest posts from https://blog.wesoamochildcancer.com/feed.xml.</p>
+          <p className="muted">Latest stories and video features from Wesoamo Child Cancer Foundation.</p>
         </Container>
       </section>
 
-      <section className="section">
+      <FeaturedVideos />
+
+      <section className="section section--soft">
         <Container>
+          <div className="sectionHead">
+            <h2>Blog posts</h2>
+            <p>Latest posts from https://blog.wesoamochildcancer.com/feed.xml.</p>
+          </div>
+
           {loading && <p className="muted">Loading blog posts...</p>}
 
           {!loading && error && (
             <div className="note">
               <strong>We could not load posts right now.</strong>
-              <p className="tiny">{error} Please try again shortly.</p>
+              <p className="tiny">{error} Showing fallback updates instead.</p>
             </div>
           )}
 

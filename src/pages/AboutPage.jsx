@@ -1,6 +1,7 @@
 ﻿import SEO from "../components/SEO";
 import Container from "../components/Container";
 import { org } from "../data/org";
+import FeaturedVideos from "../components/FeaturedVideos";
 
 export default function AboutPage() {
   return (
@@ -36,6 +37,12 @@ export default function AboutPage() {
           </div>
         </Container>
       </section>
+
+      <FeaturedVideos
+        title="Watch our advocacy in action"
+        subtitle="Stories and interviews sharing our mission to support children with cancer."
+        sectionClassName="section section--soft"
+      />
     </>
   );
 }
