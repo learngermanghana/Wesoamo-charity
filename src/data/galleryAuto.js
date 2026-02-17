@@ -18,4 +18,4 @@ export const gallery = Object.entries(modules)
       caption: label || "Wesoamo photo"
     };
   })
-  .sort((a, b) => a.caption.localeCompare(b.caption));
+  .sort((a, b) => a.caption.localeCompare(b.caption, undefined, { numeric: true, sensitivity: "base" }));

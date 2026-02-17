@@ -35,7 +35,7 @@ export default function GalleryPage() {
         <Container>
           <GalleryGrid items={gallery} />
           <p className="tiny" style={{ marginTop: ".9rem" }}>
-            Add photos by dropping them into <strong>src/assets/gallery</strong> (any filenames). Refresh the page.
+            Tip: Click any photo to open it full-size, then use <strong>←</strong> and <strong>→</strong> keys to browse.
           </p>
         </Container>
       </section>
