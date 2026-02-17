@@ -1,5 +1,25 @@
 const FEED_URL = "https://blog.wesoamochildcancer.com/feed.xml";
 const FEED_PROXY_URL = `https://api.allorigins.win/raw?url=${encodeURIComponent(FEED_URL)}`;
+const FALLBACK_POSTS = [
+  {
+    title: "THE WESOAMO STORY GH",
+    link: "https://www.youtube.com/watch?v=fF6YiDZBAz0",
+    pubDate: "",
+    excerpt: "Watch our story and advocacy journey on YouTube."
+  },
+  {
+    title: "Special Tribute to the late Nicole Wesoamo Pwamang | The Standpoint",
+    link: "https://www.youtube.com/watch?v=RN3w3uYlGWI",
+    pubDate: "",
+    excerpt: "A heartfelt tribute shared on The Standpoint."
+  },
+  {
+    title: "A Date With Cancer | The Standpoint",
+    link: "https://www.youtube.com/watch?v=X8QNizm_6eg",
+    pubDate: "",
+    excerpt: "A conversation about cancer awareness and support."
+  }
+];
 
 function readNodeText(parent, selector) {
   const node = parent.querySelector(selector);
@@ -62,7 +82,7 @@ export async function fetchBlogPosts() {
     }
   }
 
-  throw new Error("Unable to load blog posts right now.");
+  return FALLBACK_POSTS;
 }
 
 export function formatPostDate(dateInput) {
