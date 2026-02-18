@@ -1,10 +1,10 @@
 ﻿import Container from "./Container";
 import { Link } from "react-router-dom";
 import { org } from "../data/org";
-import { gallery } from "../data/galleryAuto";
+import { homepageGallery } from "../data/homepageGallery";
 
 export default function Hero() {
-  const heroImg = gallery?.[0]; // first photo (use 00-hero.jpg to control)
+  const heroImg = homepageGallery?.[0];
 
   return (
     <section className="hero">

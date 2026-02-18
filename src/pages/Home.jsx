@@ -10,7 +10,7 @@ import Contact from "../components/Contact";
 import HomeBlogHighlight from "../components/HomeBlogHighlight";
 import FeaturedVideos from "../components/FeaturedVideos";
 
-import { gallery } from "../data/galleryAuto";
+import { homepageGallery } from "../data/homepageGallery";
 
 export default function Home() {
   return (
@@ -31,7 +31,7 @@ export default function Home() {
         subtitle="Highlights from TV interviews and community awareness features."
         sectionClassName="section"
       />
-      <HomeGalleryPreview items={gallery} />
+      <HomeGalleryPreview items={homepageGallery} />
       <Testimonials />
       <Contact />
     </>
