@@ -1,4 +1,4 @@
-﻿export const org = {
+export const org = {
   name: "Wesoamo Child Cancer Foundation",
   tagline: "Awareness • Welfare Support • Counselling • Survivorship",
   mission:
@@ -6,15 +6,23 @@
   primaryCta: { label: "Donate", href: "/get-involved#donate" },
   secondaryCta: { label: "Volunteer", href: "/get-involved#volunteer" },
 
-  donateUrl:
-    "https://wa.me/233555945515?text=Hello%20Wesoamo%20Child%20Cancer%20Foundation%2C%20I%20want%20to%20donate.%20Please%20share%20the%20available%20donation%20options.",
+  donateUrl: "https://www.gofundme.com/f/wesoamo-childcancer-fund",
 
   phoneRaw: "0555945515",
   phoneE164: "+233555945515",
   whatsapp: "233555945515",
-  email: "info@wesoamo.org", // placeholder (change if needed)
-  facebook:
-    "https://web.facebook.com/wesoamo?rdid=8kgd4OVNi7WM8fH6&share_url=https%253A%252F%252Fweb.facebook.com%252Fshare%252F1AaPSmTq9t%252F%253F_rdc%253D1%2526_rdr",
+  email: "info@wesoamo.org",
+  facebook: "https://www.facebook.com/share/18H2a7NzVQ/",
+  photoAlbums: [
+    {
+      label: "Google Drive album (about 60 photos)",
+      href: "https://drive.google.com/drive/folders/1W6nlTnW47kbcyhcLlH0DQ7GgGK6AvAIn"
+    },
+    {
+      label: "Google Photos album (about 64 photos)",
+      href: "https://photos.app.goo.gl/HYL4ewLqpJhUCRLs9"
+    }
+  ],
   region: "Ghana",
-  baseUrl: "https://wesoamo.org" // change to your real domain later
+  baseUrl: "https://wesoamo.org"
 };
