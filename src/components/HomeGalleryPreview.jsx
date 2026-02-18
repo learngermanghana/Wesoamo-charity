@@ -2,7 +2,13 @@ import Container from "./Container";
 import { Link } from "react-router-dom";
 import { org } from "../data/org";
 
-export default function HomeGalleryPreview({ items = [] }) {
+export default function HomeGalleryPreview({
+  items = [],
+  title = "Photos from our work",
+  subtitle = "Moments from awareness outreaches, hospital support visits, counselling, and community volunteering.",
+  showAlbumLinks = true,
+  showDonateButton = true
+}) {
   const preview = (items || []).slice(0, 6);
 
   if (!preview.length) return null;
@@ -11,10 +17,8 @@ export default function HomeGalleryPreview({ items = [] }) {
     <section className="section">
       <Container>
         <div className="sectionHead">
-          <h2>Photos from our work</h2>
-          <p>
-            Moments from awareness outreaches, hospital support visits, counselling, and community volunteering.
-          </p>
+          <h2>{title}</h2>
+          <p>{subtitle}</p>
         </div>
 
         <div className="galleryGrid">
@@ -47,15 +51,21 @@ export default function HomeGalleryPreview({ items = [] }) {
 
         <div className="btnRow" style={{ marginTop: "1rem" }}>
           <Link className="btn btn--outline" to="/photos">View all photos</Link>
-          <a className="btn btn--outline" href={org.photoAlbums[0].href} target="_blank" rel="noreferrer">
-            Open Google Drive album
-          </a>
-          <a className="btn btn--outline" href={org.photoAlbums[1].href} target="_blank" rel="noreferrer">
-            Open Google Photos album
-          </a>
-          <a className="btn btn--primary" href={org.donateUrl} target="_blank" rel="noreferrer">
-            Donate on GoFundMe
-          </a>
+          {showAlbumLinks && (
+            <>
+              <a className="btn btn--outline" href={org.photoAlbums[0].href} target="_blank" rel="noreferrer">
+                Open Google Drive album
+              </a>
+              <a className="btn btn--outline" href={org.photoAlbums[1].href} target="_blank" rel="noreferrer">
+                Open Google Photos album
+              </a>
+            </>
+          )}
+          {showDonateButton && (
+            <a className="btn btn--primary" href={org.donateUrl} target="_blank" rel="noreferrer">
+              Donate on GoFundMe
+            </a>
+          )}
         </div>
       </Container>
     </section>
