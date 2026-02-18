@@ -1,4 +1,4 @@
-﻿import Container from "./Container";
+import Container from "./Container";
 import { Link } from "react-router-dom";
 import { org } from "../data/org";
 
@@ -47,6 +47,12 @@ export default function HomeGalleryPreview({ items = [] }) {
 
         <div className="btnRow" style={{ marginTop: "1rem" }}>
           <Link className="btn btn--outline" to="/photos">View all photos</Link>
+          <a className="btn btn--outline" href={org.photoAlbums[0].href} target="_blank" rel="noreferrer">
+            Open Google Drive album
+          </a>
+          <a className="btn btn--outline" href={org.photoAlbums[1].href} target="_blank" rel="noreferrer">
+            Open Google Photos album
+          </a>
           <a className="btn btn--primary" href={org.donateUrl} target="_blank" rel="noreferrer">
             Donate on GoFundMe
           </a>

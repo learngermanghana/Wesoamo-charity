@@ -1,4 +1,4 @@
-﻿import SEO from "../components/SEO";
+import SEO from "../components/SEO";
 import Container from "../components/Container";
 import GalleryGrid from "../components/GalleryGrid";
 import { gallery } from "../data/galleryAuto";
@@ -27,6 +27,14 @@ export default function GalleryPage() {
             <a className="btn btn--outline" href={org.facebook} target="_blank" rel="noreferrer">
               Follow on Facebook
             </a>
+          </div>
+
+          <div className="btnRow" style={{ marginTop: ".65rem" }}>
+            {org.photoAlbums.map((album) => (
+              <a key={album.href} className="btn btn--outline" href={album.href} target="_blank" rel="noreferrer">
+                {album.label}
+              </a>
+            ))}
           </div>
         </Container>
       </section>
