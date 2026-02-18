@@ -11,6 +11,7 @@ import HomeBlogHighlight from "../components/HomeBlogHighlight";
 import FeaturedVideos from "../components/FeaturedVideos";
 
 import { homepageGallery } from "../data/homepageGallery";
+import { playroomGallery } from "../data/playroomGallery";
 
 export default function Home() {
   return (
@@ -32,6 +33,12 @@ export default function Home() {
         sectionClassName="section"
       />
       <HomeGalleryPreview items={homepageGallery} />
+      <HomeGalleryPreview
+        items={playroomGallery}
+        title="Playroom moments"
+        subtitle="Six snapshots from our child-friendly playroom where children in treatment can play, learn, and feel supported."
+        showAlbumLinks={false}
+      />
       <Testimonials />
       <Contact />
     </>
