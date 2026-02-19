@@ -44,6 +44,11 @@ export default function HomeBlogHighlight() {
 
         <div className="blogHighlightGrid">
           <article className="card card--blogHighlight">
+            {latestPost.image && (
+              <a href={latestPost.link} target="_blank" rel="noreferrer" className="blogThumbLink" aria-label={`Read ${latestPost.title}`}>
+                <img className="blogThumb" src={latestPost.image} alt={latestPost.title} loading="lazy" decoding="async" />
+              </a>
+            )}
             <div className="blogPostMeta">{formatPostDate(latestPost.pubDate) || "Latest update"}</div>
             <h3>{latestPost.title}</h3>
             <p className="muted">{latestPost.excerpt}</p>
