@@ -45,10 +45,20 @@ function toAbsoluteUrl(url, baseUrl = "") {
   }
 
   try {
-    return new URL(url, baseUrl || "https://www.wesoamochildcancer.com").toString();
+    const normalizedUrl = new URL(url, baseUrl || "https://www.wesoamochildcancer.com");
+    return normalizeWesoamoBlogUrl(normalizedUrl).toString();
   } catch {
     return "";
   }
+}
+
+function normalizeWesoamoBlogUrl(url) {
+  if (url.hostname === "blog.wesoamochildcancer.app") {
+    url.hostname = "blog.wesoamochildcancer.com";
+    url.protocol = "http:";
+  }
+
+  return url;
 }
 
 function extractImageFromHtml(html = "", baseUrl = "") {
@@ -68,7 +78,7 @@ function normalizePost(post) {
 
   return {
     title: (post.title || "").trim(),
-    link: (post.link || "").trim(),
+    link: toAbsoluteUrl(post.link),
     pubDate: post.pubDate || post.isoDate || "",
     excerpt: excerpt.length >= 220 ? `${excerpt}…` : excerpt,
     image: toAbsoluteUrl(post.image, post.link)
