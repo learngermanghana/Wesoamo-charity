@@ -60,7 +60,7 @@ export default function BlogPage() {
         <Container>
           <div className="sectionHead">
             <h2>Blog posts</h2>
-            <p>Latest posts from https://blog.wesoamochildcancer.com/feed.xml.</p>
+            <p>Latest posts from https://www.wesoamochildcancer.com/blog/feed/.</p>
           </div>
 
           {loading && <p className="muted">Loading blog posts...</p>}
@@ -76,6 +76,11 @@ export default function BlogPage() {
             <div className="blogGrid">
               {posts.map((post) => (
                 <article key={post.link} className="card card--blog">
+                  {post.image && (
+                    <a href={post.link} target="_blank" rel="noreferrer" className="blogThumbLink" aria-label={`Read ${post.title}`}>
+                      <img className="blogThumb" src={post.image} alt={post.title} loading="lazy" decoding="async" />
+                    </a>
+                  )}
                   <div className="blogPostMeta">{formatPostDate(post.pubDate) || "Latest update"}</div>
                   <h3>{post.title}</h3>
                   <p className="muted">{post.excerpt}</p>
