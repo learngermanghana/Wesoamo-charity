@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import SEO from "../components/SEO";
 import Container from "../components/Container";
+import FeaturedVideos from "../components/FeaturedVideos";
 import { fetchBlogPosts, formatPostDate } from "../data/blogFeed";
-import { featuredVideos, toYouTubeEmbedUrl } from "../data/mediaVideos";
 
 export default function BlogPage() {
   const [posts, setPosts] = useState([]);
@@ -55,37 +55,6 @@ export default function BlogPage() {
       </section>
 
       <FeaturedVideos />
-
-      <section className="section section--soft">
-        <Container>
-          <div className="sectionHead">
-            <h2>Featured videos</h2>
-            <p>Watch these interviews and story features from YouTube.</p>
-          </div>
-
-          <div className="videoGrid">
-            {featuredVideos.map((video) => (
-              <article key={video.id} className="card card--video">
-                <div className="videoFrameWrap">
-                  <iframe
-                    className="videoFrame"
-                    src={toYouTubeEmbedUrl(video.id)}
-                    title={video.title}
-                    loading="lazy"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
-                  />
-                </div>
-                <h3>{video.title}</h3>
-                <a className="textLink" href={video.url} target="_blank" rel="noreferrer">
-                  Watch on YouTube →
-                </a>
-              </article>
-            ))}
-          </div>
-        </Container>
-      </section>
 
       <section className="section section--soft">
         <Container>
