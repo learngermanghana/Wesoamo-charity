@@ -39,15 +39,15 @@ export default function AdminReportsPage() {
 
   const updateFilter = (key, value) => setFilters((prev) => ({ ...prev, [key]: value }));
 
-  const onGenerate = async () => {
+  const loadReportData = async (activeFilters) => {
     setLoading(true);
     setError("");
 
     try {
       const [summaryData, fundUseData, beneficiariesData] = await Promise.all([
-        getReportsSummary(filters, idToken),
-        getFundUseReport(filters, idToken),
-        getBeneficiariesReport(filters, idToken)
+        getReportsSummary(activeFilters, idToken),
+        getFundUseReport(activeFilters, idToken),
+        getBeneficiariesReport(activeFilters, idToken)
       ]);
 
       setSummary(summaryData);
@@ -58,6 +58,14 @@ export default function AdminReportsPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    loadReportData(defaultFilters);
+  }, []);
+
+  const onGenerate = async () => {
+    await loadReportData(filters);
   };
 
   const onExport = async (format) => {
@@ -133,6 +141,7 @@ export default function AdminReportsPage() {
               <div className="adminCard"><strong>Total donations</strong><div>{summary.totalDonations || 0}</div></div>
               <div className="adminCard"><strong>Total spend</strong><div>{summary.totalSpend || 0}</div></div>
               <div className="adminCard"><strong>Active cases</strong><div>{summary.activeCases || 0}</div></div>
+              <div className="adminCard"><strong>Beneficiaries</strong><div>{summary.beneficiaries || 0}</div></div>
             </div>
           )}
 
