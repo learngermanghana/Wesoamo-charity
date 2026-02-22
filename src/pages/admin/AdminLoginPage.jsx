@@ -3,26 +3,33 @@ import { Navigate, useNavigate } from "react-router-dom";
 import Container from "../../components/Container";
 import SEO from "../../components/SEO";
 import { useAdminAuth } from "../../context/AdminAuthContext";
+import { signInAdminWithPassword } from "../../services/firebaseAuth";
 
 export default function AdminLoginPage() {
-  const [tokenInput, setTokenInput] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { isAdmin, saveToken } = useAdminAuth();
+  const { isAdmin, saveSession } = useAdminAuth();
   const navigate = useNavigate();
 
   if (isAdmin) {
     return <Navigate to="/admin/reports" replace />;
   }
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     setError("");
+    setLoading(true);
 
     try {
-      saveToken(tokenInput.trim());
+      const session = await signInAdminWithPassword(email.trim(), password);
+      saveSession(session);
       navigate("/admin/reports");
-    } catch {
-      setError("Invalid Firebase ID token. Please use an admin account token.");
+    } catch (err) {
+      setError(err.message || "Could not sign in.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -32,21 +39,36 @@ export default function AdminLoginPage() {
       <section className="section">
         <Container className="adminAuth">
           <h1>Admin login</h1>
-          <p className="muted">Paste a Firebase Auth ID token with admin claim to access reports.</p>
+          <p className="muted">Sign in with your Firebase admin account email and password.</p>
 
           <form className="adminCard" onSubmit={onSubmit}>
-            <label htmlFor="idToken">Firebase ID token</label>
-            <textarea
-              id="idToken"
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
               className="input"
-              rows={7}
-              value={tokenInput}
-              onChange={(e) => setTokenInput(e.target.value)}
-              placeholder="eyJhbGciOiJSUzI1NiIsImtpZCI6..."
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="admin@example.com"
+              required
+            />
+
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              className="input"
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
               required
             />
             {error && <div className="errorText">{error}</div>}
-            <button className="btn btn--primary" type="submit">Enter admin panel</button>
+            <button className="btn btn--primary" type="submit" disabled={loading}>
+              {loading ? "Signing in..." : "Enter admin panel"}
+            </button>
           </form>
         </Container>
       </section>

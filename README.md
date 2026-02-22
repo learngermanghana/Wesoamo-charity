@@ -15,7 +15,7 @@ The admin reporting flow now includes:
 
 ### Frontend routes
 
-- `/admin/login`: accepts a Firebase ID token from an admin user.
+- `/admin/login`: signs in with Firebase Authentication email/password for an admin user.
 - `/admin/reports`: protected reporting dashboard.
 
 ### Required frontend environment variables
@@ -23,6 +23,7 @@ The admin reporting flow now includes:
 Set these in `.env`:
 
 ```bash
+VITE_FIREBASE_API_KEY=your-web-api-key
 VITE_FIREBASE_PROJECT_ID=your-project-id
 VITE_FIREBASE_REGION=us-central1
 VITE_FIREBASE_FUNCTIONS_BASE_URL=https://us-central1-your-project-id.cloudfunctions.net

@@ -1,4 +1,5 @@
 export const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "",
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "",
   region: import.meta.env.VITE_FIREBASE_REGION || "us-central1"
 };
@@ -18,4 +19,12 @@ export function buildFunctionUrl(path) {
   }
 
   return `${firebaseEndpoints.base}${path}`;
+}
+
+export function buildFirebaseAuthUrl(path) {
+  if (!firebaseConfig.apiKey) {
+    throw new Error("Missing VITE_FIREBASE_API_KEY");
+  }
+
+  return `https://identitytoolkit.googleapis.com/v1/${path}?key=${firebaseConfig.apiKey}`;
 }
