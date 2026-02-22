@@ -18,6 +18,35 @@ The admin reporting flow now includes:
 - `/admin/login`: signs in with Firebase Authentication email/password for an admin user.
 - `/admin/reports`: protected reporting dashboard.
 
+Admin access currently allows any successfully authenticated Firebase email/password user (testing mode).
+
+### Optional: grant admin custom claims (for stricter production access later)
+
+When you are ready to enforce stricter role-based access, Firebase custom claims must be set with the Firebase Admin SDK (not from the Firebase Console user table directly).
+
+1. Create/download a service account key from **Project Settings → Service accounts**.
+2. Export it in your shell:
+   ```bash
+   export GOOGLE_APPLICATION_CREDENTIALS=/absolute/path/to/service-account.json
+   ```
+3. Install function dependencies if needed:
+   ```bash
+   npm install --prefix firebase/functions
+   ```
+4. Set admin claims by email or UID:
+   ```bash
+   node firebase/functions/scripts/setAdminClaim.js --email you@example.com
+   # or
+   node firebase/functions/scripts/setAdminClaim.js --uid <firebase-uid>
+   ```
+5. Have the user sign out and sign back in so they receive a fresh ID token containing the new claims.
+
+To remove admin claims:
+
+```bash
+node firebase/functions/scripts/setAdminClaim.js --email you@example.com --remove
+```
+
 ### Required frontend environment variables
 
 Set these in `.env`:
