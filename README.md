@@ -1,73 +1,53 @@
-# React + TypeScript + Vite
+# Wesoamo Foundation Site
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This repository contains the public website and a Firebase-backed admin reporting flow.
 
-Currently, two official plugins are available:
+## Admin reporting (Firebase)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The admin reporting flow now includes:
 
-## React Compiler
+1. Donations summary report
+2. Program spend / fund-use report
+3. Beneficiary activity report
+4. Protected admin route (`/admin/reports`)
+5. CSV/PDF export actions
+6. Public transparency page fed from backend snapshot when available
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Frontend routes
 
-## Expanding the ESLint configuration
+- `/admin/login`: accepts a Firebase ID token from an admin user.
+- `/admin/reports`: protected reporting dashboard.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Required frontend environment variables
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Set these in `.env`:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_REGION=us-central1
+VITE_FIREBASE_FUNCTIONS_BASE_URL=https://us-central1-your-project-id.cloudfunctions.net
+VITE_FIREBASE_REPORTS_SUMMARY_PATH=/reportsSummary
+VITE_FIREBASE_REPORTS_FUND_USE_PATH=/reportsFundUse
+VITE_FIREBASE_REPORTS_BENEFICIARIES_PATH=/reportsBeneficiaries
+VITE_FIREBASE_REPORTS_EXPORT_PATH=/reportsExport
+VITE_FIREBASE_TRANSPARENCY_PATH=/publicTransparencySnapshot
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Firebase backend
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Cloud Function handlers are scaffolded in `firebase/functions/index.js`.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Deploy from a Firebase Functions project:
+
+```bash
+cd firebase/functions
+npm install
+firebase deploy --only functions
+```
+
+### Local development
+
+```bash
+npm install
+npm run dev
 ```

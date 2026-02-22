@@ -1,0 +1,21 @@
+export const firebaseConfig = {
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "",
+  region: import.meta.env.VITE_FIREBASE_REGION || "us-central1"
+};
+
+export const firebaseEndpoints = {
+  base: import.meta.env.VITE_FIREBASE_FUNCTIONS_BASE_URL || "",
+  reportsSummary: import.meta.env.VITE_FIREBASE_REPORTS_SUMMARY_PATH || "/reportsSummary",
+  reportsFundUse: import.meta.env.VITE_FIREBASE_REPORTS_FUND_USE_PATH || "/reportsFundUse",
+  reportsBeneficiaries: import.meta.env.VITE_FIREBASE_REPORTS_BENEFICIARIES_PATH || "/reportsBeneficiaries",
+  reportsExport: import.meta.env.VITE_FIREBASE_REPORTS_EXPORT_PATH || "/reportsExport",
+  transparencySnapshot: import.meta.env.VITE_FIREBASE_TRANSPARENCY_PATH || "/publicTransparencySnapshot"
+};
+
+export function buildFunctionUrl(path) {
+  if (!firebaseEndpoints.base) {
+    throw new Error("Missing VITE_FIREBASE_FUNCTIONS_BASE_URL");
+  }
+
+  return `${firebaseEndpoints.base}${path}`;
+}

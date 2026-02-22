@@ -11,6 +11,9 @@ import VolunteerPage from "./pages/VolunteerPage";
 import RequestSupportPage from "./pages/RequestSupportPage";
 import BlogPage from "./pages/BlogPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import AdminLoginPage from "./pages/admin/AdminLoginPage";
+import AdminReportsPage from "./pages/admin/AdminReportsPage";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 export default function App() {
   return (
@@ -26,6 +29,15 @@ export default function App() {
           <Route path="/volunteer" element={<VolunteerPage />} />
           <Route path="/request-support" element={<RequestSupportPage />} />
           <Route path="/blog" element={<BlogPage />} />
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route
+            path="/admin/reports"
+            element={(
+              <ProtectedRoute>
+                <AdminReportsPage />
+              </ProtectedRoute>
+            )}
+          />
 
           {/* fallback */}
           <Route path="*" element={<NotFoundPage />} />
