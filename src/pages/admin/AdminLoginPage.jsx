@@ -3,13 +3,15 @@ import { Navigate, useNavigate } from "react-router-dom";
 import Container from "../../components/Container";
 import SEO from "../../components/SEO";
 import { useAdminAuth } from "../../context/AdminAuthContext";
-import { signInAdminWithPassword } from "../../services/firebaseAuth";
+import { sendPasswordResetEmail, signInAdminWithPassword } from "../../services/firebaseAuth";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [resetMessage, setResetMessage] = useState("");
+  const [isResetting, setIsResetting] = useState(false);
   const { isAdmin, saveSession } = useAdminAuth();
   const navigate = useNavigate();
 
@@ -20,6 +22,7 @@ export default function AdminLoginPage() {
   const onSubmit = async (event) => {
     event.preventDefault();
     setError("");
+    setResetMessage("");
     setLoading(true);
 
     try {
@@ -30,6 +33,30 @@ export default function AdminLoginPage() {
       setError(err.message || "Could not sign in.");
     } finally {
       setLoading(false);
+    }
+  };
+
+
+  const onPasswordReset = async () => {
+    const trimmedEmail = email.trim();
+
+    if (!trimmedEmail) {
+      setError("Enter your email first to reset your password.");
+      setResetMessage("");
+      return;
+    }
+
+    setError("");
+    setResetMessage("");
+    setIsResetting(true);
+
+    try {
+      await sendPasswordResetEmail(trimmedEmail);
+      setResetMessage("Password reset email sent. Check your inbox.");
+    } catch (err) {
+      setError(err.message || "Could not send password reset email.");
+    } finally {
+      setIsResetting(false);
     }
   };
 
@@ -66,9 +93,20 @@ export default function AdminLoginPage() {
               required
             />
             {error && <div className="errorText">{error}</div>}
-            <button className="btn btn--primary" type="submit" disabled={loading}>
-              {loading ? "Signing in..." : "Enter admin panel"}
-            </button>
+            {resetMessage && <div className="successText">{resetMessage}</div>}
+            <div className="adminActions">
+              <button className="btn btn--primary" type="submit" disabled={loading || isResetting}>
+                {loading ? "Signing in..." : "Enter admin panel"}
+              </button>
+              <button
+                className="btn btn--outline"
+                type="button"
+                onClick={onPasswordReset}
+                disabled={loading || isResetting}
+              >
+                {isResetting ? "Sending reset..." : "Forgot password"}
+              </button>
+            </div>
           </form>
         </Container>
       </section>

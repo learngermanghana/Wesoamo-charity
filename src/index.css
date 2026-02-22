@@ -697,6 +697,10 @@ input:focus, select:focus, textarea:focus{
   color:#b91c1c;
   font-weight:700;
 }
+.successText{
+  color:#166534;
+  font-weight:700;
+}
 @media (max-width: 900px){
   .adminFilters,
   .adminGrid{ grid-template-columns:1fr; }
