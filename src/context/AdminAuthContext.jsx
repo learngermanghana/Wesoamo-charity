@@ -17,11 +17,12 @@ function isExpired(claims) {
   return claims.exp * 1000 <= Date.now();
 }
 
+
 export function AdminAuthProvider({ children }) {
   const [idToken, setIdToken] = useState(() => localStorage.getItem(STORAGE_KEY) || "");
 
   const claims = useMemo(() => (idToken ? parseJwtClaims(idToken) : null), [idToken]);
-  const isAdmin = Boolean(idToken && !isExpired(claims) && (claims?.admin || claims?.role === "admin"));
+  const isAdmin = Boolean(idToken && !isExpired(claims));
 
   const saveToken = (token) => {
     localStorage.setItem(STORAGE_KEY, token);
