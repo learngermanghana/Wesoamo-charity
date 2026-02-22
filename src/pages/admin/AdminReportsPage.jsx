@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import Container from "../../components/Container";
 import SEO from "../../components/SEO";
 import { useAdminAuth } from "../../context/AdminAuthContext";
@@ -84,10 +85,15 @@ export default function AdminReportsPage() {
         <Container className="adminReports">
           <div className="adminHeaderRow">
             <div>
-              <h1>Admin reports</h1>
-              <p className="muted">Generate donation, fund-use, and beneficiary reports.</p>
+              <h1>Reports</h1>
+              <p className="muted">Generate donation, fund-use, and beneficiary reports for authenticated users.</p>
             </div>
             <button className="btn btn--outline" onClick={logout}>Log out</button>
+          </div>
+
+          <div className="adminActions">
+            <Link className="btn" to="/admin/reports">Reports</Link>
+            <Link className="btn btn--outline" to="/admin/data-entry">Data entry</Link>
           </div>
 
           <div className="adminCard adminFilters">
@@ -117,6 +123,10 @@ export default function AdminReportsPage() {
           </div>
 
           {error && <div className="errorText">{error}</div>}
+
+          {!loading && !error && !hasResults && (
+            <div className="adminCard">No report data yet for the selected filters. Try another date range, or add records from the Data entry page.</div>
+          )}
 
           {summary && (
             <div className="adminGrid">
