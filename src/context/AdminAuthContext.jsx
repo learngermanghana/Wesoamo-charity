@@ -12,15 +12,24 @@ function parseJwtClaims(token) {
   }
 }
 
+function isExpired(claims) {
+  if (!claims?.exp) return false;
+  return claims.exp * 1000 <= Date.now();
+}
+
 export function AdminAuthProvider({ children }) {
   const [idToken, setIdToken] = useState(() => localStorage.getItem(STORAGE_KEY) || "");
 
   const claims = useMemo(() => (idToken ? parseJwtClaims(idToken) : null), [idToken]);
-  const isAdmin = Boolean(claims?.admin || claims?.role === "admin");
+  const isAdmin = Boolean(idToken && !isExpired(claims) && (claims?.admin || claims?.role === "admin"));
 
   const saveToken = (token) => {
     localStorage.setItem(STORAGE_KEY, token);
     setIdToken(token);
+  };
+
+  const saveSession = ({ idToken: nextToken }) => {
+    saveToken(nextToken || "");
   };
 
   const logout = () => {
@@ -29,7 +38,7 @@ export function AdminAuthProvider({ children }) {
   };
 
   return (
-    <AdminAuthContext.Provider value={{ idToken, claims, isAdmin, saveToken, logout }}>
+    <AdminAuthContext.Provider value={{ idToken, claims, isAdmin, saveToken, saveSession, logout }}>
       {children}
     </AdminAuthContext.Provider>
   );
