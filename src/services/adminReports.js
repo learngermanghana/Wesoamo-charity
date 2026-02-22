@@ -38,18 +38,6 @@ export function createAdminRecord(payload, idToken) {
   return callEndpoint(firebaseEndpoints.reportsCreateRecord, payload, idToken);
 }
 
-export function getRecentAdminRecords(limit = 20, idToken) {
-  return callEndpoint(firebaseEndpoints.reportsRecentRecords, { limit }, idToken);
-}
-
-export function updateAdminRecord(recordId, payload, idToken) {
-  return callEndpoint(firebaseEndpoints.reportsUpdateRecord, { recordId, ...payload }, idToken);
-}
-
-export function deleteAdminRecord(recordId, idToken) {
-  return callEndpoint(firebaseEndpoints.reportsDeleteRecord, { recordId }, idToken);
-}
-
 export async function getPublicTransparencySnapshot() {
   if (!firebaseEndpoints.base) {
     return null;

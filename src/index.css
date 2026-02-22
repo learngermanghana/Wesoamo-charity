@@ -708,12 +708,6 @@ input:focus, select:focus, textarea:focus{
   color:#047857;
   font-weight:700;
 }
-
-.adminTableWrap{ overflow-x:auto; }
-.adminTable{ width:100%; border-collapse:collapse; font-size:.95rem; }
-.adminTable th,
-.adminTable td{ border-bottom:1px solid rgba(15,23,42,.08); padding:.55rem; text-align:left; vertical-align:top; }
-.adminTable th{ font-weight:800; color:rgba(15,23,42,.85); }
 @media (max-width: 900px){
   .adminFilters,
   .adminGrid,

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import Container from "../../components/Container";
 import SEO from "../../components/SEO";
