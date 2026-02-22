@@ -10,7 +10,8 @@ const navLinks = [
   { label: "Blog", to: "/blog" },
   { label: "Transparency", to: "/transparency" },
   { label: "Volunteer", to: "/volunteer" },
-  { label: "Request Support", to: "/request-support" }
+  { label: "Request Support", to: "/request-support" },
+  { label: "Admin", to: "/admin/login" }
 ];
 
 export default function Navbar() {
