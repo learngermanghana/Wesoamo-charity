@@ -13,6 +13,7 @@ import BlogPage from "./pages/BlogPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminReportsPage from "./pages/admin/AdminReportsPage";
+import AdminDataEntryPage from "./pages/admin/AdminDataEntryPage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 export default function App() {
@@ -35,6 +36,14 @@ export default function App() {
             element={(
               <ProtectedRoute>
                 <AdminReportsPage />
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/admin/data-entry"
+            element={(
+              <ProtectedRoute>
+                <AdminDataEntryPage />
               </ProtectedRoute>
             )}
           />

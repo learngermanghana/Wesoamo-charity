@@ -10,6 +10,7 @@ export const firebaseEndpoints = {
   reportsFundUse: import.meta.env.VITE_FIREBASE_REPORTS_FUND_USE_PATH || "/reportsFundUse",
   reportsBeneficiaries: import.meta.env.VITE_FIREBASE_REPORTS_BENEFICIARIES_PATH || "/reportsBeneficiaries",
   reportsExport: import.meta.env.VITE_FIREBASE_REPORTS_EXPORT_PATH || "/reportsExport",
+  reportsCreateRecord: import.meta.env.VITE_FIREBASE_REPORTS_CREATE_RECORD_PATH || "/reportsCreateRecord",
   transparencySnapshot: import.meta.env.VITE_FIREBASE_TRANSPARENCY_PATH || "/publicTransparencySnapshot"
 };
 

@@ -25,10 +25,10 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { isAdmin, saveSession } = useAdminAuth();
+  const { isAuthenticated, saveSession } = useAdminAuth();
   const navigate = useNavigate();
 
-  if (isAdmin) {
+  if (isAuthenticated) {
     return <Navigate to="/admin/reports" replace />;
   }
 
@@ -50,11 +50,11 @@ export default function AdminLoginPage() {
 
   return (
     <>
-      <SEO title="Admin Login" description="Secure admin access for reporting." path="/admin/login" noindex />
+      <SEO title="Secure Login" description="Secure access for reporting and data entry." path="/admin/login" noindex />
       <section className="section">
         <Container className="adminAuth">
-          <h1>Admin login</h1>
-          <p className="muted">Sign in with your Firebase admin account email and password.</p>
+          <h1>Secure login</h1>
+          <p className="muted">Sign in with any authenticated Firebase account.</p>
 
           <form className="adminCard" onSubmit={onSubmit}>
             <label htmlFor="email">Email</label>
@@ -82,7 +82,7 @@ export default function AdminLoginPage() {
             />
             {error && <div className="errorText">{error}</div>}
             <button className="btn btn--primary" type="submit" disabled={loading}>
-              {loading ? "Signing in..." : "Enter admin panel"}
+              {loading ? "Signing in..." : "Continue"}
             </button>
           </form>
         </Container>

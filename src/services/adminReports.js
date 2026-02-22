@@ -34,6 +34,10 @@ export function getExportFile(filters, format, idToken) {
   return callEndpoint(firebaseEndpoints.reportsExport, { ...filters, format }, idToken);
 }
 
+export function createAdminRecord(payload, idToken) {
+  return callEndpoint(firebaseEndpoints.reportsCreateRecord, payload, idToken);
+}
+
 export async function getPublicTransparencySnapshot() {
   if (!firebaseEndpoints.base) {
     return null;
