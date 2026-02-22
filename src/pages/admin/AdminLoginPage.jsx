@@ -5,6 +5,21 @@ import SEO from "../../components/SEO";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 import { signInAdminWithPassword } from "../../services/firebaseAuth";
 
+
+function formatLoginError(message) {
+  if (!message) return "Could not sign in.";
+
+  if (message.includes("INVALID LOGIN CREDENTIALS")) {
+    return "Invalid email or password.";
+  }
+
+  if (message.includes("TOO MANY ATTEMPTS TRY LATER")) {
+    return "Too many login attempts. Please try again later.";
+  }
+
+  return message;
+}
+
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +42,7 @@ export default function AdminLoginPage() {
       saveSession(session);
       navigate("/admin/reports");
     } catch (err) {
-      setError(err.message || "Could not sign in.");
+      setError(formatLoginError(err.message));
     } finally {
       setLoading(false);
     }
