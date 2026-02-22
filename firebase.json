@@ -10,7 +10,7 @@
         "firebase-debug.*.log"
       ],
       "predeploy": [
-        "test -f \"$RESOURCE_DIR/package-lock.json\" || (echo \"Missing firebase/functions/package-lock.json. Run npm install in firebase/functions and commit the lockfile.\" && exit 1)"
+        "node -e \"const fs=require('fs'); const p=(process.env.RESOURCE_DIR||'') + '/package-lock.json'; if(!fs.existsSync(p)){ console.error('Missing '+p+'. Run npm install in firebase/functions and commit the lockfile.'); process.exit(1);} console.log('OK: '+p);\""
       ]
     }
   ]
