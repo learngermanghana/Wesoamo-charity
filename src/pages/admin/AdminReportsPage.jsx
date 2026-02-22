@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import Container from "../../components/Container";
 import SEO from "../../components/SEO";
 import { useAdminAuth } from "../../context/AdminAuthContext";
@@ -38,15 +39,15 @@ export default function AdminReportsPage() {
 
   const updateFilter = (key, value) => setFilters((prev) => ({ ...prev, [key]: value }));
 
-  const onGenerate = async () => {
+  const loadReportData = async (activeFilters) => {
     setLoading(true);
     setError("");
 
     try {
       const [summaryData, fundUseData, beneficiariesData] = await Promise.all([
-        getReportsSummary(filters, idToken),
-        getFundUseReport(filters, idToken),
-        getBeneficiariesReport(filters, idToken)
+        getReportsSummary(activeFilters, idToken),
+        getFundUseReport(activeFilters, idToken),
+        getBeneficiariesReport(activeFilters, idToken)
       ]);
 
       setSummary(summaryData);
@@ -57,6 +58,14 @@ export default function AdminReportsPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    loadReportData(defaultFilters);
+  }, []);
+
+  const onGenerate = async () => {
+    await loadReportData(filters);
   };
 
   const onExport = async (format) => {
@@ -84,10 +93,15 @@ export default function AdminReportsPage() {
         <Container className="adminReports">
           <div className="adminHeaderRow">
             <div>
-              <h1>Admin reports</h1>
-              <p className="muted">Generate donation, fund-use, and beneficiary reports.</p>
+              <h1>Reports</h1>
+              <p className="muted">Generate donation, fund-use, and beneficiary reports for authenticated users.</p>
             </div>
             <button className="btn btn--outline" onClick={logout}>Log out</button>
+          </div>
+
+          <div className="adminActions">
+            <Link className="btn" to="/admin/reports">Reports</Link>
+            <Link className="btn btn--outline" to="/admin/data-entry">Data entry</Link>
           </div>
 
           <div className="adminCard adminFilters">
@@ -118,11 +132,16 @@ export default function AdminReportsPage() {
 
           {error && <div className="errorText">{error}</div>}
 
+          {!loading && !error && !hasResults && (
+            <div className="adminCard">No report data yet for the selected filters. Try another date range, or add records from the Data entry page.</div>
+          )}
+
           {summary && (
             <div className="adminGrid">
               <div className="adminCard"><strong>Total donations</strong><div>{summary.totalDonations || 0}</div></div>
               <div className="adminCard"><strong>Total spend</strong><div>{summary.totalSpend || 0}</div></div>
               <div className="adminCard"><strong>Active cases</strong><div>{summary.activeCases || 0}</div></div>
+              <div className="adminCard"><strong>Beneficiaries</strong><div>{summary.beneficiaries || 0}</div></div>
             </div>
           )}
 

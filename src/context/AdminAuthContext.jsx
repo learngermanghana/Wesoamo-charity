@@ -22,7 +22,8 @@ export function AdminAuthProvider({ children }) {
   const [idToken, setIdToken] = useState(() => localStorage.getItem(STORAGE_KEY) || "");
 
   const claims = useMemo(() => (idToken ? parseJwtClaims(idToken) : null), [idToken]);
-  const isAdmin = Boolean(idToken && !isExpired(claims));
+  const isAuthenticated = Boolean(idToken && !isExpired(claims));
+  const isAdmin = isAuthenticated;
 
   const saveToken = (token) => {
     localStorage.setItem(STORAGE_KEY, token);
@@ -39,7 +40,7 @@ export function AdminAuthProvider({ children }) {
   };
 
   return (
-    <AdminAuthContext.Provider value={{ idToken, claims, isAdmin, saveToken, saveSession, logout }}>
+    <AdminAuthContext.Provider value={{ idToken, claims, isAuthenticated, isAdmin, saveToken, saveSession, logout }}>
       {children}
     </AdminAuthContext.Provider>
   );

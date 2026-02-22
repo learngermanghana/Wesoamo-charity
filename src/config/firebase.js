@@ -10,6 +10,10 @@ export const firebaseEndpoints = {
   reportsFundUse: import.meta.env.VITE_FIREBASE_REPORTS_FUND_USE_PATH || "/reportsFundUse",
   reportsBeneficiaries: import.meta.env.VITE_FIREBASE_REPORTS_BENEFICIARIES_PATH || "/reportsBeneficiaries",
   reportsExport: import.meta.env.VITE_FIREBASE_REPORTS_EXPORT_PATH || "/reportsExport",
+  reportsCreateRecord: import.meta.env.VITE_FIREBASE_REPORTS_CREATE_RECORD_PATH || "/reportsCreateRecord",
+  reportsRecentRecords: import.meta.env.VITE_FIREBASE_REPORTS_RECENT_RECORDS_PATH || "/reportsRecentRecords",
+  reportsUpdateRecord: import.meta.env.VITE_FIREBASE_REPORTS_UPDATE_RECORD_PATH || "/reportsUpdateRecord",
+  reportsDeleteRecord: import.meta.env.VITE_FIREBASE_REPORTS_DELETE_RECORD_PATH || "/reportsDeleteRecord",
   transparencySnapshot: import.meta.env.VITE_FIREBASE_TRANSPARENCY_PATH || "/publicTransparencySnapshot"
 };
 
