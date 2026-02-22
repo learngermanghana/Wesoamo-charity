@@ -10,7 +10,7 @@
         "firebase-debug.*.log"
       ],
       "predeploy": [
-        "npm --prefix \"$RESOURCE_DIR\" install --package-lock-only"
+        "test -f \"$RESOURCE_DIR/package-lock.json\" || (echo \"Missing firebase/functions/package-lock.json. Run npm install in firebase/functions and commit the lockfile.\" && exit 1)"
       ]
     }
   ]
