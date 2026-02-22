@@ -18,11 +18,11 @@ The admin reporting flow now includes:
 - `/admin/login`: signs in with Firebase Authentication email/password for an admin user.
 - `/admin/reports`: protected reporting dashboard.
 
-Admin access requires a Firebase ID token with either `admin: true` or `role: "admin"` in custom claims. A user can exist in Authentication and still be blocked from the admin dashboard if these claims are missing.
+Admin access currently allows any successfully authenticated Firebase email/password user (testing mode).
 
-### Grant admin custom claims
+### Optional: grant admin custom claims (for stricter production access later)
 
-Firebase custom claims must be set with the Firebase Admin SDK (not from the Firebase Console user table directly).
+When you are ready to enforce stricter role-based access, Firebase custom claims must be set with the Firebase Admin SDK (not from the Firebase Console user table directly).
 
 1. Create/download a service account key from **Project Settings → Service accounts**.
 2. Export it in your shell:
@@ -39,7 +39,7 @@ Firebase custom claims must be set with the Firebase Admin SDK (not from the Fir
    # or
    node firebase/functions/scripts/setAdminClaim.js --uid <firebase-uid>
    ```
-5. Have the admin user sign out and sign back in so they receive a fresh ID token containing the new claims.
+5. Have the user sign out and sign back in so they receive a fresh ID token containing the new claims.
 
 To remove admin claims:
 

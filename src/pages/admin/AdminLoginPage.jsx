@@ -2,18 +2,9 @@ import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import Container from "../../components/Container";
 import SEO from "../../components/SEO";
-import { hasAdminPrivileges, useAdminAuth } from "../../context/AdminAuthContext";
+import { useAdminAuth } from "../../context/AdminAuthContext";
 import { signInAdminWithPassword } from "../../services/firebaseAuth";
 
-
-function parseJwtClaims(token) {
-  try {
-    const payload = token.split(".")[1];
-    return JSON.parse(atob(payload));
-  } catch {
-    return null;
-  }
-}
 
 function formatLoginError(message) {
   if (!message) return "Could not sign in.";
@@ -48,12 +39,6 @@ export default function AdminLoginPage() {
 
     try {
       const session = await signInAdminWithPassword(email.trim(), password);
-      const claims = parseJwtClaims(session?.idToken || "");
-
-      if (!hasAdminPrivileges(claims)) {
-        throw new Error("This account is authenticated but is missing the required admin permissions. Please ask the project owner to add a Firebase custom claim (admin: true or role: 'admin').");
-      }
-
       saveSession(session);
       navigate("/admin/reports");
     } catch (err) {
