@@ -18,6 +18,8 @@ The admin reporting flow now includes:
 - `/admin/login`: signs in with Firebase Authentication email/password for an admin user.
 - `/admin/reports`: protected reporting dashboard.
 
+Admin access requires a Firebase ID token with either `admin: true` or `role: "admin"` in custom claims. A user can exist in Authentication and still be blocked from the admin dashboard if these claims are missing.
+
 ### Required frontend environment variables
 
 Set these in `.env`:

@@ -2,8 +2,32 @@ import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import Container from "../../components/Container";
 import SEO from "../../components/SEO";
-import { useAdminAuth } from "../../context/AdminAuthContext";
+import { hasAdminPrivileges, useAdminAuth } from "../../context/AdminAuthContext";
 import { signInAdminWithPassword } from "../../services/firebaseAuth";
+
+
+function parseJwtClaims(token) {
+  try {
+    const payload = token.split(".")[1];
+    return JSON.parse(atob(payload));
+  } catch {
+    return null;
+  }
+}
+
+function formatLoginError(message) {
+  if (!message) return "Could not sign in.";
+
+  if (message.includes("INVALID LOGIN CREDENTIALS")) {
+    return "Invalid email or password.";
+  }
+
+  if (message.includes("TOO MANY ATTEMPTS TRY LATER")) {
+    return "Too many login attempts. Please try again later.";
+  }
+
+  return message;
+}
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -24,10 +48,16 @@ export default function AdminLoginPage() {
 
     try {
       const session = await signInAdminWithPassword(email.trim(), password);
+      const claims = parseJwtClaims(session?.idToken || "");
+
+      if (!hasAdminPrivileges(claims)) {
+        throw new Error("This account is authenticated but is missing the required admin permissions. Please ask the project owner to add a Firebase custom claim (admin: true or role: 'admin').");
+      }
+
       saveSession(session);
       navigate("/admin/reports");
     } catch (err) {
-      setError(err.message || "Could not sign in.");
+      setError(formatLoginError(err.message));
     } finally {
       setLoading(false);
     }
