@@ -38,12 +38,14 @@ VITE_FIREBASE_TRANSPARENCY_PATH=/publicTransparencySnapshot
 
 Cloud Function handlers are scaffolded in `firebase/functions/index.js`.
 
-Deploy from a Firebase Functions project:
+The repo now includes a root `firebase.json` that points Firebase CLI to `firebase/functions` as the functions source.
+
+Deploy from the repository root:
 
 ```bash
-cd firebase/functions
-npm install
-firebase deploy --only functions
+npm install --prefix firebase/functions
+firebase deploy --only functions --project <your-project-id>
+firebase functions:list --project <your-project-id>
 ```
 
 ### Local development
