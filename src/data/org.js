@@ -24,5 +24,5 @@ export const org = {
     }
   ],
   region: "Ghana",
-  baseUrl: "https://wesoamo.org"
+  baseUrl: "https://www.wesoamochildcancer.com"
 };
