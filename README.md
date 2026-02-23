@@ -57,14 +57,18 @@ Set these in `.env`:
 VITE_FIREBASE_API_KEY=your-web-api-key
 VITE_FIREBASE_PROJECT_ID=your-project-id
 VITE_FIREBASE_REGION=us-central1
-VITE_FIREBASE_FUNCTIONS_BASE_URL=https://us-central1-your-project-id.cloudfunctions.net
-VITE_FIREBASE_REPORTS_SUMMARY_PATH=/reportsSummary
-VITE_FIREBASE_REPORTS_FUND_USE_PATH=/reportsFundUse
-VITE_FIREBASE_REPORTS_BENEFICIARIES_PATH=/reportsBeneficiaries
-VITE_FIREBASE_REPORTS_EXPORT_PATH=/reportsExport
+VITE_FIREBASE_FUNCTIONS_BASE_URL=
+VITE_FIREBASE_REPORTS_SUMMARY_PATH=https://reportssummary-478602495522.us-central1.run.app
+VITE_FIREBASE_REPORTS_FUND_USE_PATH=https://reportsfunduse-478602495522.us-central1.run.app
+VITE_FIREBASE_REPORTS_BENEFICIARIES_PATH=https://reportsbeneficiaries-478602495522.us-central1.run.app
+VITE_FIREBASE_REPORTS_EXPORT_PATH=https://reportsexport-478602495522.us-central1.run.app
 VITE_FIREBASE_REPORTS_CREATE_RECORD_PATH=/reportsCreateRecord
-VITE_FIREBASE_TRANSPARENCY_PATH=/publicTransparencySnapshot
+VITE_FIREBASE_TRANSPARENCY_PATH=https://publictransparencysnapshot-478602495522.us-central1.run.app
 ```
+
+`VITE_FIREBASE_FUNCTIONS_BASE_URL` is optional when each endpoint variable is set to a full URL (Cloud Run v2). Keep it only as a fallback for legacy v1 `base + path` setups.
+
+> **Note:** The listed Cloud Run services do not include `reportsCreateRecord`, so admin save/create actions will fail until that backend endpoint is deployed (or the frontend is changed to use a different endpoint).
 
 ### Firebase backend
 

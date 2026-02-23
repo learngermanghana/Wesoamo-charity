@@ -1,4 +1,4 @@
-import { buildFunctionUrl, firebaseEndpoints } from "../config/firebase";
+import { buildEndpoint, buildFunctionUrl, firebaseEndpoints } from "../config/firebase";
 
 async function callEndpoint(path, payload = {}, idToken = "") {
   const response = await fetch(buildFunctionUrl(path), {
@@ -39,12 +39,12 @@ export function createAdminRecord(payload, idToken) {
 }
 
 export async function getPublicTransparencySnapshot() {
-  if (!firebaseEndpoints.base) {
+  if (!firebaseEndpoints.transparencySnapshot) {
     return null;
   }
 
   try {
-    const response = await fetch(buildFunctionUrl(firebaseEndpoints.transparencySnapshot), {
+    const response = await fetch(buildEndpoint(firebaseEndpoints.transparencySnapshot), {
       method: "GET"
     });
 

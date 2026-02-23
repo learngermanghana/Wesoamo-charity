@@ -14,12 +14,24 @@ export const firebaseEndpoints = {
   transparencySnapshot: import.meta.env.VITE_FIREBASE_TRANSPARENCY_PATH || "/publicTransparencySnapshot"
 };
 
-export function buildFunctionUrl(path) {
+export function buildEndpoint(pathOrUrl) {
+  if (!pathOrUrl) {
+    throw new Error("Missing endpoint env var");
+  }
+
+  if (/^https?:\/\//i.test(pathOrUrl)) {
+    return pathOrUrl;
+  }
+
   if (!firebaseEndpoints.base) {
     throw new Error("Missing VITE_FIREBASE_FUNCTIONS_BASE_URL");
   }
 
-  return `${firebaseEndpoints.base}${path}`;
+  return `${firebaseEndpoints.base}${pathOrUrl.startsWith("/") ? "" : "/"}${pathOrUrl}`;
+}
+
+export function buildFunctionUrl(pathOrUrl) {
+  return buildEndpoint(pathOrUrl);
 }
 
 export function buildFirebaseAuthUrl(path) {
