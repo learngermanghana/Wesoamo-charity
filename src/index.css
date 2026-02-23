@@ -62,7 +62,13 @@ a:hover{ text-decoration: underline; }
 .brand__sub{ font-size:.82rem; color: var(--muted); margin-top:.15rem; }
 
 .nav__links{ display:flex; gap: 1rem; align-items:center; }
-.nav__links a{ font-weight: 800; color: rgba(15,23,42,.82); }
+.nav__links a{
+  font-weight: 800;
+  color: rgba(15,23,42,.82);
+  position: relative;
+  z-index: 1;
+}
+.nav__links .btn{ flex-shrink: 0; }
 .nav__links a.active{ color: var(--primary); text-decoration:none; }
 .nav__toggle{
   display:none;
