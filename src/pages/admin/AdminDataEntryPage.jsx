@@ -42,7 +42,7 @@ export default function AdminDataEntryPage() {
         beneficiaryCount: Number(form.beneficiaryCount || 0),
         activeCases: Number(form.activeCases || 0),
         notes: form.notes.trim(),
-        ...(isEditing ? { changeReason: form.changeReason.trim() } : {})
+        changeReason: isEditing ? form.changeReason.trim() : "Initial record entry"
       };
 
       const activeToken = await refreshTokenIfNeeded();
