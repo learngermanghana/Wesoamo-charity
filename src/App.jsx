@@ -1,4 +1,4 @@
-﻿import { Routes, Route } from "react-router-dom";
+﻿import { Navigate, Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -30,6 +30,7 @@ export default function App() {
           <Route path="/volunteer" element={<VolunteerPage />} />
           <Route path="/request-support" element={<RequestSupportPage />} />
           <Route path="/blog" element={<BlogPage />} />
+          <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route
             path="/admin/reports"
