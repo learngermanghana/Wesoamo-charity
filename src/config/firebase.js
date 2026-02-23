@@ -41,3 +41,11 @@ export function buildFirebaseAuthUrl(path) {
 
   return `https://identitytoolkit.googleapis.com/v1/${path}?key=${firebaseConfig.apiKey}`;
 }
+
+export function buildFirebaseSecureTokenUrl() {
+  if (!firebaseConfig.apiKey) {
+    throw new Error("Missing VITE_FIREBASE_API_KEY");
+  }
+
+  return `https://securetoken.googleapis.com/v1/token?key=${firebaseConfig.apiKey}`;
+}

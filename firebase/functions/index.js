@@ -34,6 +34,10 @@ function normalizeString(value) {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function isTestingWriteModeEnabled() {
+  return process.env.ALLOW_UNAUTH_ADMIN_WRITES !== "false";
+}
+
 function getActor(decodedToken) {
   return {
     uid: decodedToken.uid || "unknown",
@@ -220,7 +224,20 @@ exports.reportsCreateRecord = onRequest(async (request, response) => {
   if (request.method !== "POST") return response.status(405).send("Method not allowed");
 
   try {
-    const actor = { uid: "testing-mode", email: "testing-mode@local" };
+    let actor;
+
+    try {
+      const decoded = await assertAuthenticated(request);
+      actor = getActor(decoded);
+    } catch (authError) {
+      if (!isTestingWriteModeEnabled()) {
+        throw authError;
+      }
+
+      logger.warn("Proceeding without verified auth token because ALLOW_UNAUTH_ADMIN_WRITES is enabled");
+      actor = { uid: "testing-mode", email: "testing-mode@local" };
+    }
+
     const payload = request.body || {};
 
     const date = normalizeString(payload.date);
@@ -233,7 +250,6 @@ exports.reportsCreateRecord = onRequest(async (request, response) => {
     const activeCases = normalizeNumber(payload.activeCases);
 
     if (!date) return response.status(400).send("Missing date");
-    if (!changeReason) return response.status(400).send("Missing change reason");
 
     const now = admin.firestore.FieldValue.serverTimestamp();
     const batch = db.batch();
