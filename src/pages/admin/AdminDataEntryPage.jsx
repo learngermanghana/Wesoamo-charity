@@ -12,7 +12,8 @@ const initialForm = {
   spendAmount: "",
   beneficiaryCount: "",
   activeCases: "",
-  notes: ""
+  notes: "",
+  changeReason: ""
 };
 
 export default function AdminDataEntryPage() {
@@ -38,7 +39,8 @@ export default function AdminDataEntryPage() {
         spendAmount: Number(form.spendAmount || 0),
         beneficiaryCount: Number(form.beneficiaryCount || 0),
         activeCases: Number(form.activeCases || 0),
-        notes: form.notes.trim()
+        notes: form.notes.trim(),
+        changeReason: form.changeReason.trim()
       };
 
       await createAdminRecord(payload, idToken);
@@ -98,6 +100,10 @@ export default function AdminDataEntryPage() {
             <div>
               <label htmlFor="entry-active">Active cases</label>
               <input id="entry-active" className="input" type="number" min="0" step="1" value={form.activeCases} onChange={(e) => updateField("activeCases", e.target.value)} placeholder="0" required />
+            </div>
+            <div className="adminEntryForm__notes">
+              <label htmlFor="entry-reason">Reason for change</label>
+              <input id="entry-reason" className="input" type="text" value={form.changeReason} onChange={(e) => updateField("changeReason", e.target.value)} placeholder="Why this record is being added" required />
             </div>
             <div className="adminEntryForm__notes">
               <label htmlFor="entry-notes">Notes</label>

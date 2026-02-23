@@ -10,19 +10,43 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 const db = admin.firestore();
 
-async function assertAdmin(request) {
+async function assertAuthenticated(request) {
   const header = request.headers.authorization || "";
   const idToken = header.replace("Bearer ", "").trim();
   if (!idToken) {
     throw new Error("Missing bearer token");
   }
 
-  const decoded = await admin.auth().verifyIdToken(idToken);
-  if (!(decoded.admin || decoded.role === "admin")) {
-    throw new Error("Forbidden");
-  }
+  return admin.auth().verifyIdToken(idToken);
+}
 
-  return decoded;
+function normalizeNumber(value) {
+  const parsed = Number(value || 0);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function normalizeString(value) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function getActor(decodedToken) {
+  return {
+    uid: decodedToken.uid || "unknown",
+    email: decodedToken.email || "unknown"
+  };
+}
+
+async function writeAuditLog({ actor, action, targetCollection, targetId, before = null, after = null, reason = "" }) {
+  await db.collection("adminAuditLogs").add({
+    action,
+    targetCollection,
+    targetId,
+    before,
+    after,
+    reason,
+    actor,
+    createdAt: admin.firestore.FieldValue.serverTimestamp()
+  });
 }
 
 function parseFilters(request) {
@@ -49,7 +73,7 @@ exports.reportsSummary = onRequest(async (request, response) => {
   sendCors(response);
   if (request.method === "OPTIONS") return response.status(204).send("");
   try {
-    await assertAdmin(request);
+    await assertAuthenticated(request);
     const { from, to } = parseFilters(request);
 
     const donations = await db.collection("donations")
@@ -76,7 +100,7 @@ exports.reportsFundUse = onRequest(async (request, response) => {
   sendCors(response);
   if (request.method === "OPTIONS") return response.status(204).send("");
   try {
-    await assertAdmin(request);
+    await assertAuthenticated(request);
     const { from, to, program } = parseFilters(request);
 
     let q = db.collection("disbursements")
@@ -114,7 +138,7 @@ exports.reportsBeneficiaries = onRequest(async (request, response) => {
   sendCors(response);
   if (request.method === "OPTIONS") return response.status(204).send("");
   try {
-    await assertAdmin(request);
+    await assertAuthenticated(request);
     const { from, to } = parseFilters(request);
     const records = await db.collection("beneficiaryActivities")
       .where("date", ">=", from)
@@ -140,7 +164,7 @@ exports.reportsExport = onRequest(async (request, response) => {
   sendCors(response);
   if (request.method === "OPTIONS") return response.status(204).send("");
   try {
-    await assertAdmin(request);
+    await assertAuthenticated(request);
     const filters = parseFilters(request);
     const fundUse = await db.collection("disbursements")
       .where("date", ">=", filters.from)
@@ -181,4 +205,103 @@ exports.publicTransparencySnapshot = onRequest(async (_request, response) => {
   }
 
   return response.json(latest.data());
+});
+
+exports.reportsCreateRecord = onRequest(async (request, response) => {
+  sendCors(response);
+  if (request.method === "OPTIONS") return response.status(204).send("");
+  if (request.method !== "POST") return response.status(405).send("Method not allowed");
+
+  try {
+    const decoded = await assertAuthenticated(request);
+    const actor = getActor(decoded);
+    const payload = request.body || {};
+
+    const date = normalizeString(payload.date);
+    const program = normalizeString(payload.program) || "direct-support";
+    const notes = normalizeString(payload.notes);
+    const changeReason = normalizeString(payload.changeReason);
+    const donationAmount = normalizeNumber(payload.donationAmount);
+    const spendAmount = normalizeNumber(payload.spendAmount);
+    const beneficiaryCount = normalizeNumber(payload.beneficiaryCount);
+    const activeCases = normalizeNumber(payload.activeCases);
+
+    if (!date) return response.status(400).send("Missing date");
+    if (!changeReason) return response.status(400).send("Missing change reason");
+
+    const now = admin.firestore.FieldValue.serverTimestamp();
+    const batch = db.batch();
+
+    const adminRecordRef = db.collection("adminRecords").doc();
+    const adminRecordData = {
+      date,
+      program,
+      donationAmount,
+      spendAmount,
+      beneficiaryCount,
+      activeCases,
+      notes,
+      changeReason,
+      createdBy: actor,
+      createdAt: now,
+      updatedBy: actor,
+      updatedAt: now
+    };
+    batch.set(adminRecordRef, adminRecordData);
+
+    const donationRef = db.collection("donations").doc();
+    batch.set(donationRef, {
+      date,
+      program,
+      amount: donationAmount,
+      source: "admin-data-entry",
+      adminRecordId: adminRecordRef.id,
+      createdBy: actor,
+      createdAt: now
+    });
+
+    const disbursementRef = db.collection("disbursements").doc();
+    batch.set(disbursementRef, {
+      date,
+      program,
+      amount: spendAmount,
+      source: "admin-data-entry",
+      adminRecordId: adminRecordRef.id,
+      createdBy: actor,
+      createdAt: now
+    });
+
+    const activityRef = db.collection("beneficiaryActivities").doc();
+    batch.set(activityRef, {
+      date,
+      program,
+      type: "follow_up",
+      beneficiaryCount,
+      activeCases,
+      source: "admin-data-entry",
+      adminRecordId: adminRecordRef.id,
+      createdBy: actor,
+      createdAt: now
+    });
+
+    await batch.commit();
+
+    await writeAuditLog({
+      actor,
+      action: "create",
+      targetCollection: "adminRecords",
+      targetId: adminRecordRef.id,
+      after: {
+        ...adminRecordData,
+        createdAt: "serverTimestamp",
+        updatedAt: "serverTimestamp"
+      },
+      reason: changeReason
+    });
+
+    return response.json({ ok: true, id: adminRecordRef.id });
+  } catch (error) {
+    logger.error(error);
+    return response.status(403).send(error.message);
+  }
 });
