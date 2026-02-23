@@ -173,7 +173,6 @@ exports.reportsExport = onRequest(async (request, response) => {
   sendCors(response);
   if (request.method === "OPTIONS") return response.status(204).send("");
   try {
-    await assertAuthenticated(request);
     const filters = parseFilters(request);
     const fundUse = await db.collection("disbursements")
       .where("date", ">=", filters.from)
