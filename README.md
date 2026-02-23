@@ -11,14 +11,16 @@ The admin reporting flow now includes:
 3. Beneficiary activity report
 4. Protected admin route (`/admin/reports`)
 5. CSV/PDF export actions
-6. Public transparency page fed from backend snapshot when available
+6. Admin data-entry write endpoint (`/reportsCreateRecord`)
+7. Immutable admin audit log entries (`adminAuditLogs` collection)
+8. Public transparency page fed from backend snapshot when available
 
 ### Frontend routes
 
-- `/admin/login`: signs in with Firebase Authentication email/password for an admin user.
+- `/admin/login`: signs in with Firebase Authentication email/password for a staff user (testing mode).
 - `/admin/reports`: protected reporting dashboard.
 
-Admin access currently allows any successfully authenticated Firebase email/password user (testing mode).
+Admin access currently allows any successfully authenticated Firebase email/password user (testing mode). Audit logging is still enabled for data entry actions.
 
 ### Optional: grant admin custom claims (for stricter production access later)
 
@@ -60,6 +62,7 @@ VITE_FIREBASE_REPORTS_SUMMARY_PATH=/reportsSummary
 VITE_FIREBASE_REPORTS_FUND_USE_PATH=/reportsFundUse
 VITE_FIREBASE_REPORTS_BENEFICIARIES_PATH=/reportsBeneficiaries
 VITE_FIREBASE_REPORTS_EXPORT_PATH=/reportsExport
+VITE_FIREBASE_REPORTS_CREATE_RECORD_PATH=/reportsCreateRecord
 VITE_FIREBASE_TRANSPARENCY_PATH=/publicTransparencySnapshot
 ```
 
