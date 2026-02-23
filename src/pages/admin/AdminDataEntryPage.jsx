@@ -21,7 +21,7 @@ export default function AdminDataEntryPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const { idToken, logout } = useAdminAuth();
+  const { logout, refreshTokenIfNeeded } = useAdminAuth();
   const [searchParams] = useSearchParams();
   const isEditing = searchParams.get("mode") === "edit";
 
@@ -45,7 +45,8 @@ export default function AdminDataEntryPage() {
         ...(isEditing ? { changeReason: form.changeReason.trim() } : {})
       };
 
-      await createAdminRecord(payload, idToken);
+      const activeToken = await refreshTokenIfNeeded();
+      await createAdminRecord(payload, activeToken);
       setSuccess("Record saved successfully.");
       setForm((prev) => ({ ...initialForm, date: prev.date, program: prev.program }));
     } catch (err) {
