@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Container from "../../components/Container";
 import SEO from "../../components/SEO";
 import { useAdminAuth } from "../../context/AdminAuthContext";
@@ -22,6 +22,8 @@ export default function AdminDataEntryPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const { idToken, logout } = useAdminAuth();
+  const [searchParams] = useSearchParams();
+  const isEditing = searchParams.get("mode") === "edit";
 
   const updateField = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
@@ -40,7 +42,7 @@ export default function AdminDataEntryPage() {
         beneficiaryCount: Number(form.beneficiaryCount || 0),
         activeCases: Number(form.activeCases || 0),
         notes: form.notes.trim(),
-        changeReason: form.changeReason.trim()
+        ...(isEditing ? { changeReason: form.changeReason.trim() } : {})
       };
 
       await createAdminRecord(payload, idToken);
@@ -101,10 +103,12 @@ export default function AdminDataEntryPage() {
               <label htmlFor="entry-active">Active cases</label>
               <input id="entry-active" className="input" type="number" min="0" step="1" value={form.activeCases} onChange={(e) => updateField("activeCases", e.target.value)} placeholder="0" required />
             </div>
-            <div className="adminEntryForm__notes">
-              <label htmlFor="entry-reason">Reason for change</label>
-              <input id="entry-reason" className="input" type="text" value={form.changeReason} onChange={(e) => updateField("changeReason", e.target.value)} placeholder="Why this record is being added" required />
-            </div>
+            {isEditing && (
+              <div className="adminEntryForm__notes">
+                <label htmlFor="entry-reason">Reason for change</label>
+                <input id="entry-reason" className="input" type="text" value={form.changeReason} onChange={(e) => updateField("changeReason", e.target.value)} placeholder="Describe what changed" required />
+              </div>
+            )}
             <div className="adminEntryForm__notes">
               <label htmlFor="entry-notes">Notes</label>
               <textarea id="entry-notes" className="input" rows="4" value={form.notes} onChange={(e) => updateField("notes", e.target.value)} placeholder="Optional context for this record" />
