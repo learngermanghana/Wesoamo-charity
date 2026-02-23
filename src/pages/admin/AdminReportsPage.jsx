@@ -33,7 +33,7 @@ export default function AdminReportsPage() {
   const [summary, setSummary] = useState(null);
   const [fundUse, setFundUse] = useState([]);
   const [beneficiaries, setBeneficiaries] = useState([]);
-  const { idToken, logout } = useAdminAuth();
+  const { logout, refreshTokenIfNeeded } = useAdminAuth();
 
   const hasResults = useMemo(() => summary || fundUse.length || beneficiaries.length, [summary, fundUse, beneficiaries]);
 
@@ -44,10 +44,11 @@ export default function AdminReportsPage() {
     setError("");
 
     try {
+      const activeToken = await refreshTokenIfNeeded();
       const [summaryData, fundUseData, beneficiariesData] = await Promise.all([
-        getReportsSummary(activeFilters, idToken),
-        getFundUseReport(activeFilters, idToken),
-        getBeneficiariesReport(activeFilters, idToken)
+        getReportsSummary(activeFilters, activeToken),
+        getFundUseReport(activeFilters, activeToken),
+        getBeneficiariesReport(activeFilters, activeToken)
       ]);
 
       setSummary(summaryData);
@@ -73,7 +74,8 @@ export default function AdminReportsPage() {
     setError("");
 
     try {
-      const file = await getExportFile(filters, format, idToken);
+      const activeToken = await refreshTokenIfNeeded();
+      const file = await getExportFile(filters, format, activeToken);
       downloadFile({
         filename: file.filename || `admin-report.${format}`,
         mimeType: file.mimeType || (format === "pdf" ? "application/pdf" : "text/csv"),

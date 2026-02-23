@@ -20,7 +20,7 @@ The admin reporting flow now includes:
 - `/admin/login`: signs in with Firebase Authentication email/password for a staff user (testing mode).
 - `/admin/reports`: protected reporting dashboard.
 
-Admin access currently allows any successfully authenticated Firebase email/password user (testing mode). Audit logging is still enabled for data entry actions.
+Admin access currently allows any successfully authenticated Firebase email/password user (testing mode). Audit logging is still enabled for data entry actions, and data-entry writes can be temporarily allowed without a verified token in testing deployments.
 
 ### Optional: grant admin custom claims (for stricter production access later)
 
@@ -48,6 +48,19 @@ To remove admin claims:
 ```bash
 node firebase/functions/scripts/setAdminClaim.js --email you@example.com --remove
 ```
+
+
+### Testing-mode write flexibility
+
+The `reportsCreateRecord` function supports a temporary testing flag:
+
+```bash
+ALLOW_UNAUTH_ADMIN_WRITES=true
+```
+
+- Default behavior is testing-friendly (`true` unless explicitly set to `false`).
+- When enabled, data-entry writes continue even if an ID token is missing/expired, and records are tagged with a testing actor.
+- Set `ALLOW_UNAUTH_ADMIN_WRITES=false` to enforce strict token verification later.
 
 ### Required frontend environment variables
 
