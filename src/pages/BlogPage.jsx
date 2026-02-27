@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import SEO from "../components/SEO";
 import Container from "../components/Container";
 import FeaturedVideos from "../components/FeaturedVideos";
+import InternalLinksBlock from "../components/InternalLinksBlock";
 import { fetchBlogPosts, formatPostDate } from "../data/blogFeed";
+import { org } from "../data/org";
 
 export default function BlogPage() {
   const [posts, setPosts] = useState([]);
@@ -39,12 +41,33 @@ export default function BlogPage() {
     };
   }, []);
 
+  const articleSchema = posts.slice(0, 6).map((post) => ({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.pubDate || undefined,
+    url: post.link,
+    image: post.image || undefined,
+    author: {
+      "@type": "Organization",
+      name: org.name
+    },
+    publisher: {
+      "@type": "Organization",
+      name: org.name,
+      url: org.baseUrl
+    },
+    mainEntityOfPage: post.link
+  }));
+
   return (
     <>
       <SEO
         title="Blog"
         description="Read the latest updates, stories, and advocacy content from Wesoamo Child Cancer Foundation."
         path="/blog"
+        structuredData={articleSchema}
       />
 
       <section className="pageHead">
@@ -93,6 +116,26 @@ export default function BlogPage() {
           )}
         </Container>
       </section>
+
+      <InternalLinksBlock
+        links={[
+          {
+            href: "/request-support",
+            label: "Support assessment",
+            description: "Families can request direct support and counselling through our intake page."
+          },
+          {
+            href: "/get-involved",
+            label: "Support tools",
+            description: "Turn stories into action through donations, volunteering, or partnerships."
+          },
+          {
+            href: "/",
+            label: "Foundation overview",
+            description: "Return to the homepage for programs, impact highlights, and FAQs."
+          }
+        ]}
+      />
     </>
   );
 }
