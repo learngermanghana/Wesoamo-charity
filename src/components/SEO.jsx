@@ -39,7 +39,29 @@ function setCanonical(url) {
   el.setAttribute("href", url);
 }
 
-export default function SEO({ title, description, path = "/", image = "/og.svg", noindex = false }) {
+function clearStructuredData() {
+  document.head.querySelectorAll('script[data-seo-schema="true"]').forEach((el) => el.remove());
+}
+
+function addStructuredData(items) {
+  items.forEach((item) => {
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.setAttribute("data-seo-schema", "true");
+    script.textContent = JSON.stringify(item);
+    document.head.appendChild(script);
+  });
+}
+
+export default function SEO({
+  title,
+  description,
+  path = "/",
+  image = "/og.svg",
+  noindex = false,
+  type = "website",
+  structuredData
+}) {
   useEffect(() => {
     const t = pageTitle(title);
     const d = description || org.mission;
@@ -51,7 +73,7 @@ export default function SEO({ title, description, path = "/", image = "/og.svg",
 
     setMetaTag('meta[name="description"]', { name: "description", content: d });
 
-    setMetaTag('meta[property="og:type"]', { property: "og:type", content: "website" });
+    setMetaTag('meta[property="og:type"]', { property: "og:type", content: type });
     setMetaTag('meta[property="og:site_name"]', { property: "og:site_name", content: org.name });
     setMetaTag('meta[property="og:title"]', { property: "og:title", content: t });
     setMetaTag('meta[property="og:description"]', { property: "og:description", content: d });
@@ -62,6 +84,7 @@ export default function SEO({ title, description, path = "/", image = "/og.svg",
     setMetaTag('meta[name="twitter:title"]', { name: "twitter:title", content: t });
     setMetaTag('meta[name="twitter:description"]', { name: "twitter:description", content: d });
     setMetaTag('meta[name="twitter:image"]', { name: "twitter:image", content: img });
+    setMetaTag('meta[name="twitter:url"]', { name: "twitter:url", content: url });
 
     if (noindex) {
       setMetaTag('meta[name="robots"]', { name: "robots", content: "noindex,follow" });
@@ -71,7 +94,22 @@ export default function SEO({ title, description, path = "/", image = "/og.svg",
         robots.remove();
       }
     }
-  }, [title, description, path, image, noindex]);
+
+    clearStructuredData();
+    const schemas = Array.isArray(structuredData)
+      ? structuredData.filter(Boolean)
+      : structuredData
+        ? [structuredData]
+        : [];
+
+    if (schemas.length) {
+      addStructuredData(schemas);
+    }
+
+    return () => {
+      clearStructuredData();
+    };
+  }, [title, description, path, image, noindex, type, structuredData]);
 
   return null;
 }

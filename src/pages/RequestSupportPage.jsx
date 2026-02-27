@@ -1,6 +1,7 @@
 ﻿import { useMemo, useState } from "react";
 import SEO from "../components/SEO";
 import Container from "../components/Container";
+import InternalLinksBlock from "../components/InternalLinksBlock";
 import { org } from "../data/org";
 
 export default function RequestSupportPage() {
@@ -31,6 +32,25 @@ export default function RequestSupportPage() {
   const canSend =
     caregiverName.trim() && phone.trim() && childAge.toString().trim() && hospital.trim() && location.trim();
 
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Childhood Cancer Family Support Service",
+    provider: {
+      "@type": "Organization",
+      name: org.name,
+      url: org.baseUrl
+    },
+    serviceType: "Family support and counselling for childhood cancer",
+    areaServed: org.region,
+    availableChannel: {
+      "@type": "ServiceChannel",
+      serviceUrl: `${org.baseUrl}/request-support`,
+      availableLanguage: "en"
+    },
+    description: "Private request pathway for welfare, counselling, and survivor follow-up support for families."
+  };
+
   function sendWhatsApp(e) {
     e.preventDefault();
     if (!canSend) return;
@@ -43,6 +63,7 @@ export default function RequestSupportPage() {
         title="Request Support"
         description="Private support request for parents/caregivers — welfare help, counselling, hospital child welfare projects, and survivor follow-up."
         path="/request-support"
+        structuredData={serviceSchema}
       />
 
       <section className="pageHead">
@@ -143,6 +164,26 @@ export default function RequestSupportPage() {
           </div>
         </Container>
       </section>
+
+      <InternalLinksBlock
+        links={[
+          {
+            href: "/get-involved",
+            label: "Support tools",
+            description: "Use donation and volunteer options to support current family needs."
+          },
+          {
+            href: "/blog",
+            label: "Related stories",
+            description: "Read advocacy stories and awareness updates from the foundation."
+          },
+          {
+            href: "/",
+            label: "Homepage FAQ",
+            description: "Review common questions about support, privacy, and next steps."
+          }
+        ]}
+      />
     </>
   );
 }
