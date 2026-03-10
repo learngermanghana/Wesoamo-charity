@@ -90,7 +90,7 @@ export default function Home() {
 
       <InternalLinksBlock
         title="Looking for support, tools, or stories?"
-        subtitle="Use these internal links to move between support assessments, practical ways to help, and blog updates."
+        subtitle="Use these internal links to move between support assessments, practical ways to help, and inspiring stories."
         links={[
           {
             href: "/request-support",
@@ -103,8 +103,8 @@ export default function Home() {
             description: "Find donation and volunteer options to take action quickly."
           },
           {
-            href: "/blog",
-            label: "Blog updates",
+            href: "/inspiring-stories",
+            label: "Inspiring stories",
             description: "Read stories, interviews, and awareness updates from our team."
           }
         ]}

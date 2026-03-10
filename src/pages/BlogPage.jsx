@@ -64,15 +64,15 @@ export default function BlogPage() {
   return (
     <>
       <SEO
-        title="Blog"
+        title="Inspiring Stories"
         description="Read the latest updates, stories, and advocacy content from Wesoamo Child Cancer Foundation."
-        path="/blog"
+        path="/inspiring-stories"
         structuredData={articleSchema}
       />
 
       <section className="pageHead">
         <Container>
-          <h1>Blog</h1>
+          <h1>Inspiring Stories</h1>
           <p className="muted">Latest stories and video features from Wesoamo Child Cancer Foundation.</p>
         </Container>
       </section>
@@ -82,11 +82,11 @@ export default function BlogPage() {
       <section className="section section--soft">
         <Container>
           <div className="sectionHead">
-            <h2>Blog posts</h2>
+            <h2>Inspiring stories</h2>
             <p>Latest posts from https://www.wesoamochildcancer.com/blog/feed/.</p>
           </div>
 
-          {loading && <p className="muted">Loading blog posts...</p>}
+          {loading && <p className="muted">Loading inspiring stories...</p>}
 
           {!loading && error && (
             <div className="note">

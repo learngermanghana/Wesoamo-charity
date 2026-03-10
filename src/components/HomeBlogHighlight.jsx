@@ -36,7 +36,7 @@ export default function HomeBlogHighlight() {
     <section className="section section--soft">
       <Container>
         <div className="sectionHead">
-          <h2>Latest from our blog</h2>
+          <h2>Latest inspiring stories</h2>
           <p>
             Real stories, updates, and advocacy insights from our child cancer support journey.
           </p>
@@ -56,7 +56,7 @@ export default function HomeBlogHighlight() {
               <a className="btn btn--primary" href={latestPost.link} target="_blank" rel="noreferrer">
                 Read latest post
               </a>
-              <Link className="btn btn--outline" to="/blog">
+              <Link className="btn btn--outline" to="/inspiring-stories">
                 View all posts
               </Link>
             </div>

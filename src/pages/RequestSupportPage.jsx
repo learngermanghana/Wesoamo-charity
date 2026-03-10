@@ -173,7 +173,7 @@ export default function RequestSupportPage() {
             description: "Use donation and volunteer options to support current family needs."
           },
           {
-            href: "/blog",
+            href: "/inspiring-stories",
             label: "Related stories",
             description: "Read advocacy stories and awareness updates from the foundation."
           },

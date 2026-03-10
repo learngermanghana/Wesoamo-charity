@@ -29,7 +29,8 @@ export default function App() {
           <Route path="/transparency" element={<TransparencyPage />} />
           <Route path="/volunteer" element={<VolunteerPage />} />
           <Route path="/request-support" element={<RequestSupportPage />} />
-          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/inspiring-stories" element={<BlogPage />} />
+          <Route path="/blog" element={<Navigate to="/inspiring-stories" replace />} />
           <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route
