@@ -36,6 +36,7 @@ export default function Contact() {
             <div className="kv"><span>Phone</span><a href={"tel:" + org.phoneE164}>{org.phoneRaw}</a></div>
             <div className="kv"><span>Email</span><a href={"mailto:" + org.email}>{org.email}</a></div>
             <div className="kv"><span>Facebook</span><a href={org.facebook} target="_blank" rel="noreferrer">Visit our page</a></div>
+            <div className="kv"><span>Map location</span><a href={org.mapUrl} target="_blank" rel="noreferrer">Open on Google Maps</a></div>
 
             <div className="btnRow" style={{ marginTop: ".8rem" }}>
               <a className="btn btn--primary" href={waLink} target="_blank" rel="noreferrer">WhatsApp us</a>
