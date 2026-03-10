@@ -11,7 +11,8 @@ export const org = {
   phoneRaw: "0555945515",
   phoneE164: "+233555945515",
   whatsapp: "233555945515",
-  email: "wesoamochildcancerfoundation@gmail.com",
+  email: "info@wesoamochildcancer.com",
+  mapUrl: "https://maps.app.goo.gl/1ksPWUgzUUBudWLt5",
   facebook: "https://www.facebook.com/share/18H2a7NzVQ/",
   photoAlbums: [
     {
