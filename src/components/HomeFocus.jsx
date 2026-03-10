@@ -5,19 +5,19 @@ const focus = [
   {
     title: "Create Awareness",
     text: "Help more families recognize early signs and seek timely medical care.",
-    cta: "Support awareness →",
-    to: "/programs"
+    cta: "Donate →",
+    to: "/get-involved#donate"
   },
   {
     title: "Support Treatment Journeys",
     text: "Contribute to welfare and urgent needs for children in treatment.",
-    cta: "Donate to welfare →",
+    cta: "Donate →",
     to: "/get-involved#donate"
   },
   {
     title: "Stand with Parents",
     text: "Provide counselling and emotional support for parents facing difficult diagnoses.",
-    cta: "Support counselling →",
+    cta: "Donate →",
     to: "/get-involved#donate"
   }
 ];

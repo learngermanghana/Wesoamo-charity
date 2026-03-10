@@ -1,5 +1,4 @@
 ﻿import Container from "./Container";
-import { Link } from "react-router-dom";
 import { org } from "../data/org";
 import { homepageGallery } from "../data/homepageGallery";
 
@@ -18,9 +17,6 @@ export default function Hero() {
             <a className="btn btn--primary" href={org.donateUrl} target="_blank" rel="noreferrer">
               Donate
             </a>
-            <Link className="btn btn--outline" to={org.secondaryCta.href}>
-              Volunteer
-            </Link>
           </div>
 
           <div className="hero__mini">

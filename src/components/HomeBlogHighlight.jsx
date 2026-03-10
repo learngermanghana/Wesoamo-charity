@@ -53,7 +53,10 @@ export default function HomeBlogHighlight() {
             <h3>{latestPost.title}</h3>
             <p className="muted">{latestPost.excerpt}</p>
             <div className="btnRow" style={{ marginTop: ".8rem" }}>
-              <a className="btn btn--primary" href={latestPost.link} target="_blank" rel="noreferrer">
+              <a className="btn btn--primary" href="/get-involved#donate">
+                Donate
+              </a>
+              <a className="btn btn--outline" href={latestPost.link} target="_blank" rel="noreferrer">
                 Read latest post
               </a>
               <Link className="btn btn--outline" to="/inspiring-stories">

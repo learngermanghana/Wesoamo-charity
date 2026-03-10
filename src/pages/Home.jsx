@@ -1,9 +1,10 @@
-﻿import SEO from "../components/SEO";
+﻿import { useState } from "react";
+import SEO from "../components/SEO";
 import Hero from "../components/Hero";
 import HomeFocus from "../components/HomeFocus";
+import Impact from "../components/Impact";
 import AboutBlock from "../components/AboutBlock";
 import Programs from "../components/Programs";
-import Impact from "../components/Impact";
 import HomeGalleryPreview from "../components/HomeGalleryPreview";
 import Testimonials from "../components/Testimonials";
 import Contact from "../components/Contact";
@@ -18,6 +19,8 @@ import { faq } from "../data/faq";
 import { org } from "../data/org";
 
 export default function Home() {
+  const [showMore, setShowMore] = useState(false);
+
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -53,64 +56,83 @@ export default function Home() {
       />
       <Hero />
       <HomeFocus />
-      <AboutBlock />
-      <Programs />
       <Impact />
-      <HomeBlogHighlight />
-      <FeaturedVideos
-        title="Watch our story"
-        subtitle="Highlights from TV interviews and community awareness features."
-        sectionClassName="section"
-      />
-      <HomeGalleryPreview items={homepageGallery} />
-      <HomeGalleryPreview
-        items={playroomGallery}
-        title="Playroom moments"
-        subtitle="Six snapshots from our child-friendly playroom where children in treatment can play, learn, and feel supported."
-        showAlbumLinks={false}
-      />
-      <Testimonials />
 
-      <section className="section">
+      <section className="section section--soft">
         <Container>
-          <div className="sectionHead">
-            <h2>Frequently asked questions</h2>
-            <p>Quick answers about donations, volunteering, and family support services.</p>
-          </div>
-          <div className="grid2">
-            {faq.map((item) => (
-              <article key={item.q} className="card">
-                <h3>{item.q}</h3>
-                <p className="muted">{item.a}</p>
-              </article>
-            ))}
+          <div className="btnRow" style={{ justifyContent: "center" }}>
+            <button type="button" className="btn btn--outline" onClick={() => setShowMore((prev) => !prev)}>
+              {showMore ? "Show less" : "View more"}
+            </button>
           </div>
         </Container>
       </section>
 
-      <InternalLinksBlock
-        title="Looking for support, tools, or stories?"
-        subtitle="Use these internal links to move between support assessments, practical ways to help, and inspiring stories."
-        links={[
-          {
-            href: "/request-support",
-            label: "Support assessment",
-            description: "Share your situation privately and get connected to available child-cancer support."
-          },
-          {
-            href: "/get-involved",
-            label: "Support tools",
-            description: "Find donation and volunteer options to take action quickly."
-          },
-          {
-            href: "/inspiring-stories",
-            label: "Inspiring stories",
-            description: "Read stories, interviews, and awareness updates from our team."
-          }
-        ]}
-      />
+      {showMore && (
+        <>
+          <AboutBlock />
+          <Programs />
+          <HomeBlogHighlight />
+          <FeaturedVideos
+            title="Watch our story"
+            subtitle="Highlights from TV interviews and community awareness features."
+            sectionClassName="section"
+          />
+          <HomeGalleryPreview
+            items={homepageGallery}
+            showDonateButton={false}
+          />
+          <HomeGalleryPreview
+            items={playroomGallery}
+            title="Playroom moments"
+            subtitle="Six snapshots from our child-friendly playroom where children in treatment can play, learn, and feel supported."
+            showAlbumLinks={false}
+            showDonateButton={false}
+          />
+          <Testimonials />
 
-      <Contact />
+          <section className="section">
+            <Container>
+              <div className="sectionHead">
+                <h2>Frequently asked questions</h2>
+                <p>Quick answers about donations, volunteering, and family support services.</p>
+              </div>
+              <div className="grid2">
+                {faq.map((item) => (
+                  <article key={item.q} className="card">
+                    <h3>{item.q}</h3>
+                    <p className="muted">{item.a}</p>
+                  </article>
+                ))}
+              </div>
+            </Container>
+          </section>
+
+          <InternalLinksBlock
+            title="Looking for support, tools, or stories?"
+            subtitle="Use these internal links to move between support assessments, practical ways to help, and inspiring stories."
+            links={[
+              {
+                href: "/request-support",
+                label: "Support assessment",
+                description: "Share your situation privately and get connected to available child-cancer support."
+              },
+              {
+                href: "/get-involved",
+                label: "Support tools",
+                description: "Find donation and volunteer options to take action quickly."
+              },
+              {
+                href: "/inspiring-stories",
+                label: "Inspiring stories",
+                description: "Read stories, interviews, and awareness updates from our team."
+              }
+            ]}
+          />
+
+          <Contact />
+        </>
+      )}
     </>
   );
 }
