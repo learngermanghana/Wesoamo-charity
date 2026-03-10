@@ -39,7 +39,8 @@ export default function Contact() {
             <div className="kv"><span>Map location</span><a href={org.mapUrl} target="_blank" rel="noreferrer">Open on Google Maps</a></div>
 
             <div className="btnRow" style={{ marginTop: ".8rem" }}>
-              <a className="btn btn--primary" href={waLink} target="_blank" rel="noreferrer">WhatsApp us</a>
+              <a className="btn btn--primary" href={org.donateUrl} target="_blank" rel="noreferrer">Donate</a>
+              <a className="btn btn--outline" href={waLink} target="_blank" rel="noreferrer">WhatsApp us</a>
               <a className="btn btn--outline" href={org.facebook} target="_blank" rel="noreferrer">Message on Facebook</a>
             </div>
           </div>
@@ -68,7 +69,7 @@ export default function Contact() {
               <textarea value={message} onChange={(e) => setMessage(e.target.value)} required rows="6" placeholder="How can we help?" />
             </label>
 
-            <button className="btn btn--primary" type="submit">Send to WhatsApp</button>
+            <button className="btn btn--outline" type="submit">Send to WhatsApp</button>
             <p className="tiny">This opens WhatsApp with your message prepared.</p>
           </form>
         </div>

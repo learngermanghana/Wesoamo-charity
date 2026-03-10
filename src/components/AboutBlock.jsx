@@ -19,8 +19,8 @@ export default function AboutBlock() {
             </p>
 
             <div className="btnRow">
-              <Link className="btn btn--primary" to="/about">Learn more</Link>
-              <Link className="btn btn--outline" to="/get-involved#donate">Donate to support</Link>
+              <Link className="btn btn--primary" to="/get-involved#donate">Donate</Link>
+              <Link className="btn btn--outline" to="/about">Learn more</Link>
             </div>
           </div>
 
