@@ -6,8 +6,11 @@ export default function Impact() {
     <section className="section">
       <Container>
         <div className="sectionHead">
-          <h2>Impact you can feel</h2>
-          <p>These are starter placeholders—replace with verified numbers as you track activities.</p>
+          <h2>Serving with compassion across Ghana</h2>
+          <p>
+            We are always ready to support those in need across hospitals in Ghana. Our impact is
+            countless, and we continue to serve while we work to track verified data.
+          </p>
         </div>
 
         <div className="stats">

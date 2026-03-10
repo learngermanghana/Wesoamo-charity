@@ -1,8 +1,8 @@
 ﻿export const impact = [
-  { label: "Children & families supported", value: "100+" },
-  { label: "Awareness outreaches completed", value: "25+" },
-  { label: "Welfare support cases assisted", value: "60+" },
-  { label: "Counselling check-ins", value: "80+" }
+  { label: "People in need supported across hospitals in Ghana", value: "Countless" },
+  { label: "Communities reached with care and hope", value: "Ongoing" },
+  { label: "Welfare support and emergency assistance provided", value: "Continuous" },
+  { label: "Counselling and follow-up support delivered", value: "Always" }
 ];
 
-// Replace numbers with real figures as you track them.
+// Descriptive values are used because verified totals are still being compiled.
