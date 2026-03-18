@@ -36,8 +36,7 @@ export default function GetInvolvedPage() {
           <div id="donate" className="card card--wide">
             <h2>Donate</h2>
             <p className="muted">
-              Donations help with welfare needs, urgent support, counselling activities, and hospital child
-              welfare projects.
+              Donations help fund treatment, transportation for early diagnosis, welfare needs, emergency assistance, and counselling support for families.
             </p>
 
             <div className="note">

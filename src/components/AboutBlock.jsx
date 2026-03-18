@@ -14,8 +14,7 @@ export default function AboutBlock() {
               in treatment receive dignity and support, and parents are not left alone.
             </p>
             <p className="muted">
-              Our work centers on awareness, welfare and financial support, counselling for parents (especially in
-              difficult or terminal cases), survivor follow-up, and hospital child welfare projects.
+              Our work centers on treatment support, transportation for early diagnosis and care, welfare assistance, counselling for parents, survivor follow-up, and hospital child welfare projects.
             </p>
 
             <div className="btnRow">

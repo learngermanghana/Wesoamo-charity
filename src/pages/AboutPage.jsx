@@ -27,11 +27,11 @@ export default function AboutPage() {
             <div className="card">
               <h3>What we focus on</h3>
               <ul className="bullets">
-                <li>Awareness on childhood cancer</li>
-                <li>Financial and welfare support</li>
-                <li>Counselling for parents and caregivers</li>
-                <li>Survivor follow-up support</li>
-                <li>Hospital child welfare projects (education/play)</li>
+                <li>Fund medical care by covering essential treatment for children battling cancer</li>
+                <li>Ensure access by transporting patients to hospital for early diagnosis and life-saving care</li>
+                <li>Support families with welfare assistance throughout the recovery journey</li>
+                <li>Provide counselling and emotional support for parents and caregivers</li>
+                <li>Strengthen hospital child welfare projects through education and play support</li>
               </ul>
             </div>
           </div>

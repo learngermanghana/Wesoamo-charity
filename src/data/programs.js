@@ -8,8 +8,13 @@
   {
     title: "Financial & Welfare Support",
     blurb:
-      "We support children in treatment with welfare needs and financial assistance where possible.",
-    bullets: ["Transport and essential needs", "Emergency assistance", "Family welfare support"]
+      "We help families meet treatment, transport, emergency, and welfare costs when cancer care becomes financially overwhelming.",
+    bullets: [
+      "Pay for surgery, chemotherapy, or radiotherapy for patients who need financial assistance",
+      "Transport support and help with initial diagnosis",
+      "Emergency assistance for urgent family needs",
+      "Welfare support throughout treatment and recovery"
+    ]
   },
   {
     title: "Parent Counselling & Emotional Support",
