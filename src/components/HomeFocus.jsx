@@ -10,13 +10,13 @@ const focus = [
   },
   {
     title: "Support Treatment Journeys",
-    text: "Contribute to welfare and urgent needs for children in treatment.",
+    text: "Adopt a child's treatment by helping to pay for surgery, chemotherapy, or radiation, and contribute to welfare needs throughout care.",
     cta: "Donate →",
     to: "/get-involved#donate"
   },
   {
     title: "Stand with Parents",
-    text: "Provide counselling and emotional support for parents facing difficult diagnoses.",
+    text: "Provide counselling and emotional support for parents facing difficult diagnoses, caring for a child on palliative care, or grieving the loss of a child.",
     cta: "Donate →",
     to: "/get-involved#donate"
   }

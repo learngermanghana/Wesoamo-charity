@@ -6,8 +6,8 @@ export default function Testimonials() {
     <section className="section section--soft">
       <Container>
         <div className="sectionHead">
-          <h2>Stories of strength</h2>
-          <p>Replace with real stories (names/initials) when ready.</p>
+          <h2>Real stories</h2>
+          <p>Stories from children, parents, and supporters whose journeys reflect the impact of timely care and compassion.</p>
         </div>
 
         <div className="grid3">

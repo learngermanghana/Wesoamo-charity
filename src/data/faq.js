@@ -5,7 +5,7 @@
   },
   {
     q: "Can I donate to a specific program?",
-    a: "Yes. Tell us the program you want to support (Awareness, Welfare, Counselling, Survivors, Hospital Projects)."
+    a: "Yes. Tell us the programme you want to support: Treatment, Awareness, Transportation and early diagnosis, Counselling, or Welfare."
   },
   {
     q: "How can I volunteer?",
