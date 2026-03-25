@@ -70,7 +70,6 @@ export default function AdminDataEntryPage() {
           </div>
 
           <div className="adminActions">
-            <Link className="btn btn--outline" to="/admin/reports">Go to reports</Link>
             <Link className="btn" to="/admin/data-entry">Data entry</Link>
           </div>
 

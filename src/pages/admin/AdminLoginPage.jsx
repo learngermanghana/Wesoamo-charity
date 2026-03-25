@@ -29,7 +29,7 @@ export default function AdminLoginPage() {
   const navigate = useNavigate();
 
   if (isAuthenticated) {
-    return <Navigate to="/admin/reports" replace />;
+    return <Navigate to="/admin/data-entry" replace />;
   }
 
   const onSubmit = async (event) => {
@@ -40,7 +40,7 @@ export default function AdminLoginPage() {
     try {
       const session = await signInAdminWithPassword(email.trim(), password);
       saveSession(session);
-      navigate("/admin/reports");
+      navigate("/admin/data-entry");
     } catch (err) {
       setError(formatLoginError(err.message));
     } finally {

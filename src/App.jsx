@@ -12,7 +12,6 @@ import RequestSupportPage from "./pages/RequestSupportPage";
 import BlogPage from "./pages/BlogPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
-import AdminReportsPage from "./pages/admin/AdminReportsPage";
 import AdminDataEntryPage from "./pages/admin/AdminDataEntryPage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
@@ -33,14 +32,6 @@ export default function App() {
           <Route path="/blog" element={<Navigate to="/inspiring-stories" replace />} />
           <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
-          <Route
-            path="/admin/reports"
-            element={(
-              <ProtectedRoute>
-                <AdminReportsPage />
-              </ProtectedRoute>
-            )}
-          />
           <Route
             path="/admin/data-entry"
             element={(
