@@ -11,9 +11,6 @@ import VolunteerPage from "./pages/VolunteerPage";
 import RequestSupportPage from "./pages/RequestSupportPage";
 import BlogPage from "./pages/BlogPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import AdminLoginPage from "./pages/admin/AdminLoginPage";
-import AdminDataEntryPage from "./pages/admin/AdminDataEntryPage";
-import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 export default function App() {
   return (
@@ -30,17 +27,6 @@ export default function App() {
           <Route path="/request-support" element={<RequestSupportPage />} />
           <Route path="/inspiring-stories" element={<BlogPage />} />
           <Route path="/blog" element={<Navigate to="/inspiring-stories" replace />} />
-          <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
-          <Route path="/admin/login" element={<AdminLoginPage />} />
-          <Route
-            path="/admin/data-entry"
-            element={(
-              <ProtectedRoute>
-                <AdminDataEntryPage />
-              </ProtectedRoute>
-            )}
-          />
-
           {/* fallback */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
