@@ -14,8 +14,13 @@ export default function Hero() {
           <p className="lead">{org.mission}</p>
 
           <div className="hero__cta">
-            <a className="btn btn--primary" href={org.donateUrl} target="_blank" rel="noreferrer">
-              Donate
+            <a
+              className="btn btn--primary"
+              href={`https://wa.me/${org.whatsapp}?text=${encodeURIComponent("Hello " + org.name + ", I want to donate. Please share donation details / options.")}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Donate via WhatsApp
             </a>
           </div>
 
