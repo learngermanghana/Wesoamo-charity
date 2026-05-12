@@ -25,5 +25,6 @@ export const org = {
     }
   ],
   region: "Ghana",
+  logoPath: "/images/logo.jpg",
   baseUrl: "https://www.wesoamochildcancer.com"
 };
