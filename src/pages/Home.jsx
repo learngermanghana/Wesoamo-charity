@@ -5,7 +5,6 @@ import HomeFocus from "../components/HomeFocus";
 import Impact from "../components/Impact";
 import AboutBlock from "../components/AboutBlock";
 import Programs from "../components/Programs";
-import HomeGalleryPreview from "../components/HomeGalleryPreview";
 import Testimonials from "../components/Testimonials";
 import Contact from "../components/Contact";
 import HomeBlogHighlight from "../components/HomeBlogHighlight";
@@ -13,8 +12,6 @@ import FeaturedVideos from "../components/FeaturedVideos";
 import Container from "../components/Container";
 import InternalLinksBlock from "../components/InternalLinksBlock";
 
-import { homepageGallery } from "../data/homepageGallery";
-import { playroomGallery } from "../data/playroomGallery";
 import { faq } from "../data/faq";
 import { org } from "../data/org";
 
@@ -79,20 +76,9 @@ export default function Home() {
             subtitle="Highlights from TV interviews and community awareness features."
             sectionClassName="section"
           />
-          <HomeGalleryPreview
-            items={homepageGallery}
-            showDonateButton={false}
-          />
-          <HomeGalleryPreview
-            items={playroomGallery}
-            title="Playroom moments"
-            subtitle="Six snapshots from our child-friendly playroom where children in treatment can play, learn, and feel supported."
-            showAlbumLinks={false}
-            showDonateButton={false}
-          />
           <Testimonials />
 
-          <section className="section">
+          <section className="section" id="frequently-asked-questions">
             <Container>
               <div className="sectionHead">
                 <h2>Frequently asked questions</h2>
