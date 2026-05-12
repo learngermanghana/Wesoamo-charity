@@ -6,7 +6,7 @@ function absUrl(path = "/") {
   return base.endsWith("/") ? base.slice(0, -1) + path : base + path;
 }
 
-function absImage(imgPath = "/og.svg") {
+function absImage(imgPath = "/images/logo.jpg") {
   return imgPath.startsWith("http") ? imgPath : absUrl(imgPath);
 }
 
@@ -57,7 +57,7 @@ export default function SEO({
   title,
   description,
   path = "/",
-  image = "/og.svg",
+  image = "/images/logo.jpg",
   noindex = false,
   type = "website",
   structuredData

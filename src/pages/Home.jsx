@@ -27,6 +27,7 @@ export default function Home() {
     name: org.name,
     url: org.baseUrl,
     description: org.mission,
+    logo: `${org.baseUrl}${org.logoPath}`,
     email: org.email,
     telephone: org.phoneE164,
     areaServed: org.region,
