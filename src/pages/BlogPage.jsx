@@ -83,7 +83,7 @@ export default function BlogPage() {
         <Container>
           <div className="sectionHead">
             <h2>Inspiring stories</h2>
-            <p>Latest posts from https://www.wesoamochildcancer.com/blog/feed/.</p>
+            <p>Latest published posts pulled from Sedifex public blog API.</p>
           </div>
 
           {loading && <p className="muted">Loading inspiring stories...</p>}
