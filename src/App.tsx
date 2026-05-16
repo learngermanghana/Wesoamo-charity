@@ -23,11 +23,46 @@ type BlogPost = {
   publishedAt?: string
 }
 
+type SuccessPageKind = 'donation' | 'volunteer' | 'request'
+
 const presetAmounts = [25, 50, 100, 200, 500]
 const sedifexStoreId = import.meta.env.VITE_SEDIFEX_STORE_ID?.trim() ?? ''
 const volunteerIntakeUrl = import.meta.env.VITE_SEDIFEX_VOLUNTEER_INTAKE_URL?.trim() || 'https://us-central1-sedifex-web.cloudfunctions.net/volunteerIntake'
 const supportRequestIntakeUrl = import.meta.env.VITE_SEDIFEX_SUPPORT_REQUEST_INTAKE_URL?.trim() || 'https://us-central1-sedifex-web.cloudfunctions.net/supportRequestIntake'
 const publicBlogUrl = import.meta.env.VITE_SEDIFEX_PUBLIC_BLOG_URL?.trim() || 'https://www.sedifex.com/api/public-blog'
+
+const successCopy: Record<SuccessPageKind, { eyebrow: string; title: string; body: string; steps: string[]; primaryHref: string; primaryLabel: string; secondaryHref: string; secondaryLabel: string }> = {
+  donation: {
+    eyebrow: 'Donation received',
+    title: 'Thank you for supporting Wesoamo Foundation.',
+    body: 'Your donation request has been received. If you completed online payment, the confirmation will be matched to the donation record in Sedifex.',
+    steps: ['The donor record is saved.', 'The donation amount is tracked.', 'The Wesoamo team can review and follow up.', 'You may receive updates when impact stories are published.'],
+    primaryHref: '/inspiring-stories',
+    primaryLabel: 'Read inspiring stories',
+    secondaryHref: '/donate',
+    secondaryLabel: 'Make another donation',
+  },
+  volunteer: {
+    eyebrow: 'Volunteer application sent',
+    title: 'Thank you for offering your time.',
+    body: 'Your volunteer application has been sent to Wesoamo Foundation and saved in Sedifex for review.',
+    steps: ['The team will review your details.', 'They may contact you for a short discussion.', 'Your skills and availability will be matched to a project.', 'You can support outreach, fundraising, mentoring, or operations.'],
+    primaryHref: '/inspiring-stories',
+    primaryLabel: 'See our stories',
+    secondaryHref: '/volunteer',
+    secondaryLabel: 'Submit another volunteer',
+  },
+  request: {
+    eyebrow: 'Support request sent',
+    title: 'Your request has been received.',
+    body: 'Wesoamo Foundation will review the support request and follow up using the contact details provided.',
+    steps: ['The request is saved securely for review.', 'The team checks urgency and available resources.', 'A team member may contact you for verification.', 'Approved support is tracked for follow-up and reporting.'],
+    primaryHref: '/',
+    primaryLabel: 'Return home',
+    secondaryHref: '/request-support',
+    secondaryLabel: 'Submit another request',
+  },
+}
 
 function getCurrentPath() {
   const cleanPath = window.location.pathname.replace(/\/+$/, '')
@@ -84,6 +119,10 @@ function parseBlogPosts(raw: unknown): BlogPost[] {
     items.push(post)
     return items
   }, [])
+}
+
+function goTo(path: string) {
+  window.location.assign(path)
 }
 
 function Nav() {
@@ -206,6 +245,7 @@ function DonatePage() {
     setStatus('submitting')
 
     try {
+      const donationSuccessUrl = `${window.location.origin}/donation-success`
       const response = await fetch('/api/donor-portal-sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -219,7 +259,9 @@ function DonatePage() {
           donation: { amount: amountNumber, currency: 'GHS', type: 'custom_amount' },
           currency: 'GHS',
           initializePayment: true,
-          metadata: { source: 'wesoamo-charity-website', sourcePage: '/donate', anonymous, message: clean(message, 1000), donationAmount: amountNumber },
+          returnUrl: donationSuccessUrl,
+          redirectUrl: donationSuccessUrl,
+          metadata: { source: 'wesoamo-charity-website', sourcePage: '/donate', anonymous, message: clean(message, 1000), donationAmount: amountNumber, successUrl: donationSuccessUrl },
         }),
       })
 
@@ -232,8 +274,7 @@ function DonatePage() {
         return
       }
 
-      setStatus('success')
-      setFeedback('Thank you. Your donation has been recorded. Payment checkout is not configured yet.')
+      goTo('/donation-success')
     } catch (error) {
       setStatus('error')
       setFeedback(error instanceof Error ? error.message : 'Unable to submit donation right now.')
@@ -332,7 +373,7 @@ function VolunteerPage() {
       const response = await fetch(volunteerIntakeUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ storeId: sedifexStoreId, name: clean(name, 140), phone: clean(phone, 80), email: clean(email, 180).toLowerCase(), skill: clean(skill, 180), availability: clean(availability, 180), preferredProject: clean(preferredProject, 180), location: clean(location, 180), notes: clean(notes, 1000) }) })
       const data = (await response.json().catch(() => ({}))) as IntakeResponse
       if (!response.ok || !data.ok) throw new Error(data.error || 'Unable to submit volunteer application.')
-      setStatus('success'); setFeedback('Thank you. Your volunteer application has been sent.'); setName(''); setPhone(''); setEmail(''); setSkill(''); setAvailability(''); setPreferredProject(''); setLocation(''); setNotes('')
+      goTo('/volunteer-success')
     } catch (submitError) { setStatus('error'); setFeedback(submitError instanceof Error ? submitError.message : 'Unable to submit right now.') }
   }
 
@@ -362,7 +403,7 @@ function RequestSupportPage() {
       const response = await fetch(supportRequestIntakeUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ storeId: sedifexStoreId, name: clean(name, 140), phone: clean(phone, 80), email: clean(email, 180).toLowerCase(), supportType: clean(supportType, 160), needSummary: clean(needSummary, 1000), location: clean(location, 180), householdSize: clean(householdSize, 80), priority, urgency: priority }) })
       const data = (await response.json().catch(() => ({}))) as IntakeResponse
       if (!response.ok || !data.ok) throw new Error(data.error || 'Unable to submit support request.')
-      setStatus('success'); setFeedback('Your support request has been sent for review.'); setName(''); setPhone(''); setEmail(''); setSupportType(''); setNeedSummary(''); setLocation(''); setHouseholdSize(''); setPriority('normal')
+      goTo('/request-success')
     } catch (submitError) { setStatus('error'); setFeedback(submitError instanceof Error ? submitError.message : 'Unable to submit right now.') }
   }
 
@@ -373,13 +414,43 @@ function FormPage({ title, subtitle, asideTitle, asideItems, children, onSubmit,
   return <section className="section pageSection"><div className="container twoCol"><div><span className="pill">Connected to Sedifex</span><div className="sectionHead pageTitleBlock"><h1>{title}</h1><p>{subtitle}</p></div><div className="card card--promise"><div className="promiseTitle">{asideTitle}</div><ul className="bullets">{asideItems.map((item) => <li key={item}>{item}</li>)}</ul></div></div><form className="card donationForm" onSubmit={onSubmit}>{children}<button className="btn btn--primary submitButton" type="submit" disabled={status === 'submitting' || !canSubmit}>{status === 'submitting' ? 'Sending…' : buttonText}</button>{feedback ? <p className={`note ${status === 'error' ? 'errorText' : 'successText'}`}>{feedback}</p> : null}<p className="tiny">This form posts directly to Sedifex Firebase Functions, so it does not add a Vercel serverless API route.</p></form></div></section>
 }
 
+function SuccessPage({ kind }: { kind: SuccessPageKind }) {
+  const copy = successCopy[kind]
+  return (
+    <section className="section pageSection">
+      <div className="container twoCol">
+        <div>
+          <span className="pill">{copy.eyebrow}</span>
+          <div className="sectionHead pageTitleBlock">
+            <h1>{copy.title}</h1>
+            <p>{copy.body}</p>
+          </div>
+          <div className="hero__cta">
+            <a href={copy.primaryHref} className="btn btn--primary">{copy.primaryLabel}</a>
+            <a href={copy.secondaryHref} className="btn btn--outline">{copy.secondaryLabel}</a>
+          </div>
+        </div>
+        <div className="card card--promise">
+          <div className="promiseTitle">What happens next</div>
+          <ul className="bullets">
+            {copy.steps.map((step) => <li key={step}>{step}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function App() {
   const path = getCurrentPath()
   let page = <HomePage />
   if (path === '/donate') page = <DonatePage />
+  if (path === '/donation-success') page = <SuccessPage kind="donation" />
   if (path === '/inspiring-stories') page = <InspiringStoriesPage />
   if (path === '/volunteer' || path === '/volunter') page = <VolunteerPage />
+  if (path === '/volunteer-success') page = <SuccessPage kind="volunteer" />
   if (path === '/request' || path === '/request-support') page = <RequestSupportPage />
+  if (path === '/request-success') page = <SuccessPage kind="request" />
 
   return <main className="app"><Nav />{page}<Footer /><div className="floatWrap" aria-label="Quick actions"><a className="floatBtn floatBtn--donate" href="/donate">Donate</a><a className="floatBtn" href="/request-support">Request help</a></div></main>
 }
