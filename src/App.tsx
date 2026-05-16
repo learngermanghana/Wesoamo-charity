@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { FormEvent } from 'react'
+import type { FormEvent, ReactNode } from 'react'
 import './App.css'
 
 type SubmitState = 'idle' | 'submitting' | 'success' | 'error'
@@ -42,6 +42,10 @@ function money(value: number) {
   return `GHS ${value.toLocaleString('en-GH', { minimumFractionDigits: value % 1 === 0 ? 0 : 2, maximumFractionDigits: 2 })}`
 }
 
+function optionalString(value: unknown) {
+  return typeof value === 'string' && value.trim() ? value.trim() : ''
+}
+
 function parseBlogPosts(raw: unknown): BlogPost[] {
   const source = Array.isArray(raw)
     ? raw
@@ -53,24 +57,33 @@ function parseBlogPosts(raw: unknown): BlogPost[] {
           ? (raw as { data: unknown[] }).data
           : []
 
-  return source
-    .map((item, index) => {
-      const record = item as Record<string, unknown>
-      const title = typeof record.title === 'string' ? record.title : ''
-      if (!title.trim()) return null
-      const slug = typeof record.slug === 'string' ? record.slug : undefined
-      return {
-        id: String(record.id ?? slug ?? index),
-        title,
-        slug,
-        summary: typeof record.summary === 'string' ? record.summary : typeof record.excerpt === 'string' ? record.excerpt : undefined,
-        content: typeof record.content === 'string' ? record.content : undefined,
-        imageUrl: typeof record.imageUrl === 'string' ? record.imageUrl : undefined,
-        linkUrl: typeof record.linkUrl === 'string' ? record.linkUrl : slug && sedifexStoreId ? `https://www.sedifex.com/public-blog/${encodeURIComponent(sedifexStoreId)}/${encodeURIComponent(slug)}` : undefined,
-        publishedAt: typeof record.publishedAt === 'string' ? record.publishedAt : typeof record.createdAt === 'string' ? record.createdAt : undefined,
-      }
-    })
-    .filter((item): item is BlogPost => Boolean(item))
+  return source.reduce<BlogPost[]>((items, item, index) => {
+    const record = item as Record<string, unknown>
+    const title = optionalString(record.title)
+    if (!title) return items
+
+    const slug = optionalString(record.slug)
+    const summary = optionalString(record.summary) || optionalString(record.excerpt)
+    const content = optionalString(record.content)
+    const imageUrl = optionalString(record.imageUrl)
+    const externalLinkUrl = optionalString(record.linkUrl)
+    const publishedAt = optionalString(record.publishedAt) || optionalString(record.createdAt)
+    const post: BlogPost = {
+      id: String(record.id ?? slug ?? index),
+      title,
+    }
+
+    if (slug) post.slug = slug
+    if (summary) post.summary = summary
+    if (content) post.content = content
+    if (imageUrl) post.imageUrl = imageUrl
+    if (externalLinkUrl) post.linkUrl = externalLinkUrl
+    else if (slug && sedifexStoreId) post.linkUrl = `https://www.sedifex.com/public-blog/${encodeURIComponent(sedifexStoreId)}/${encodeURIComponent(slug)}`
+    if (publishedAt) post.publishedAt = publishedAt
+
+    items.push(post)
+    return items
+  }, [])
 }
 
 function Nav() {
@@ -356,7 +369,7 @@ function RequestSupportPage() {
   return <FormPage title="Request support" subtitle="Send a request for review. The details are saved in Sedifex for Wesoamo Foundation to follow up." asideTitle="Request flow" asideItems={['Submit request', 'Team reviews details', 'Follow-up is recorded', 'Status is tracked']} onSubmit={handleSubmit} status={status} feedback={feedback} buttonText="Submit support request" canSubmit={canSubmit}><label className="field"><span>Full name</span><input value={name} onChange={(e) => setName(e.target.value)} required /></label><label className="field"><span>Phone</span><input value={phone} onChange={(e) => setPhone(e.target.value)} /></label><label className="field"><span>Email</span><input type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></label><label className="field"><span>Support type</span><input value={supportType} onChange={(e) => setSupportType(e.target.value)} required /></label><label className="field"><span>Location</span><input value={location} onChange={(e) => setLocation(e.target.value)} /></label><label className="field"><span>Household size</span><input value={householdSize} onChange={(e) => setHouseholdSize(e.target.value)} /></label><label className="field"><span>Priority</span><select value={priority} onChange={(e) => setPriority(e.target.value)}><option value="normal">Normal</option><option value="high">High</option><option value="urgent">Urgent</option></select></label><label className="field"><span>Need summary</span><textarea value={needSummary} onChange={(e) => setNeedSummary(e.target.value)} rows={4} /></label></FormPage>
 }
 
-function FormPage({ title, subtitle, asideTitle, asideItems, children, onSubmit, status, feedback, buttonText, canSubmit }: { title: string; subtitle: string; asideTitle: string; asideItems: string[]; children: React.ReactNode; onSubmit: (event: FormEvent<HTMLFormElement>) => void; status: SubmitState; feedback: string; buttonText: string; canSubmit: boolean }) {
+function FormPage({ title, subtitle, asideTitle, asideItems, children, onSubmit, status, feedback, buttonText, canSubmit }: { title: string; subtitle: string; asideTitle: string; asideItems: string[]; children: ReactNode; onSubmit: (event: FormEvent<HTMLFormElement>) => void; status: SubmitState; feedback: string; buttonText: string; canSubmit: boolean }) {
   return <section className="section pageSection"><div className="container twoCol"><div><span className="pill">Connected to Sedifex</span><div className="sectionHead pageTitleBlock"><h1>{title}</h1><p>{subtitle}</p></div><div className="card card--promise"><div className="promiseTitle">{asideTitle}</div><ul className="bullets">{asideItems.map((item) => <li key={item}>{item}</li>)}</ul></div></div><form className="card donationForm" onSubmit={onSubmit}>{children}<button className="btn btn--primary submitButton" type="submit" disabled={status === 'submitting' || !canSubmit}>{status === 'submitting' ? 'Sending…' : buttonText}</button>{feedback ? <p className={`note ${status === 'error' ? 'errorText' : 'successText'}`}>{feedback}</p> : null}<p className="tiny">This form posts directly to Sedifex Firebase Functions, so it does not add a Vercel serverless API route.</p></form></div></section>
 }
 
