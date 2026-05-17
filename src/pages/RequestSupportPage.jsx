@@ -1,8 +1,14 @@
-﻿import { useMemo, useState } from "react";
+﻿import { useState } from "react";
 import SEO from "../components/SEO";
 import Container from "../components/Container";
 import InternalLinksBlock from "../components/InternalLinksBlock";
-import { contactLinks, org } from "../data/org";
+import { org } from "../data/org";
+
+const sedifexStoreId = import.meta.env.VITE_SEDIFEX_STORE_ID?.trim() ?? "";
+
+function clean(value, max = 500) {
+  return String(value || "").trim().slice(0, max);
+}
 
 export default function RequestSupportPage() {
   const [caregiverName, setCaregiverName] = useState("");
@@ -13,21 +19,9 @@ export default function RequestSupportPage() {
   const [supportType, setSupportType] = useState("Welfare / Financial Support");
   const [urgent, setUrgent] = useState(false);
   const [notes, setNotes] = useState("");
-
-  const waLink = useMemo(() => {
-    const text =
-      `REQUEST SUPPORT - ${org.name}\n\n` +
-      `Caregiver name: ${caregiverName}\n` +
-      `Phone: ${phone}\n` +
-      `Child age: ${childAge}\n` +
-      `Hospital / Clinic: ${hospital}\n` +
-      `Location: ${location}\n` +
-      `Support needed: ${supportType}\n` +
-      `Urgent: ${urgent ? "YES" : "No"}\n\n` +
-      `Notes (please keep it brief):\n${notes || "-"}\n\n` +
-      `Submitted via website.`;
-    return `https://wa.me/${contactLinks.contact.whatsapp || org.whatsapp}?text=${encodeURIComponent(text)}`;
-  }, [caregiverName, phone, childAge, hospital, location, supportType, urgent, notes]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitState, setSubmitState] = useState("idle");
+  const [feedback, setFeedback] = useState("");
 
   const canSend =
     caregiverName.trim() && phone.trim() && childAge.toString().trim() && hospital.trim() && location.trim();
@@ -51,10 +45,61 @@ export default function RequestSupportPage() {
     description: "Private request pathway for welfare, counselling, and survivor follow-up support for families."
   };
 
-  function sendWhatsApp(e) {
+  async function submitSupportRequest(e) {
     e.preventDefault();
-    if (!canSend) return;
-    window.open(waLink, "_blank", "noopener,noreferrer");
+    if (!canSend || isSubmitting) return;
+
+    if (!sedifexStoreId) {
+      setSubmitState("error");
+      setFeedback("Setup needed: add VITE_SEDIFEX_STORE_ID in Vercel.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitState("idle");
+    setFeedback("");
+
+    try {
+      const payload = {
+        storeId: sedifexStoreId,
+        name: clean(caregiverName, 140),
+        caregiverName: clean(caregiverName, 140),
+        phone: clean(phone, 80),
+        childAge: clean(childAge, 40),
+        hospital: clean(hospital, 180),
+        clinic: clean(hospital, 180),
+        location: clean(location, 180),
+        supportType: clean(supportType, 180),
+        supportNeeded: clean(supportType, 180),
+        urgent,
+        priority: urgent ? "urgent" : "normal",
+        urgency: urgent ? "urgent" : "normal",
+        needSummary: clean(notes, 1000),
+        notes: clean(notes, 1000),
+        source: "wesoamo-charity-website",
+        sourcePage: "/request-support",
+        sourceChannel: "wesoamo-charity-website",
+        pageType: "request_support"
+      };
+
+      const res = await fetch("/api/support-request-sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || data?.error || data?.ok === false) {
+        throw new Error(data?.error || "Support request failed. Please try again.");
+      }
+
+      window.location.href = "/request-success";
+    } catch (error) {
+      setSubmitState("error");
+      setFeedback(error instanceof Error ? error.message : "Unable to submit support request right now.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -94,15 +139,15 @@ export default function RequestSupportPage() {
               </ul>
 
               <div className="callout" style={{ marginTop: "1rem" }}>
-                <div className="callout__title">Need quick help?</div>
-                <div className="callout__text">Send a private message via WhatsApp</div>
+                <div className="callout__title">Connected to Sedifex</div>
+                <div className="callout__text">Support requests are saved directly in Sedifex for private review and follow-up.</div>
                 <div className="callout__hint">
                   If this is a medical emergency, contact your hospital or emergency services immediately.
                 </div>
               </div>
             </div>
 
-            <form className="card card--form" onSubmit={sendWhatsApp}>
+            <form className="card card--form" onSubmit={submitSupportRequest}>
               <h3 className="card__title">Support request form</h3>
 
               <div className="formGrid">
@@ -153,8 +198,14 @@ export default function RequestSupportPage() {
                 </label>
               </div>
 
-              <button className="btn" type="submit" disabled={!canSend} style={{ width: "100%" }}>
-                Send privately via WhatsApp
+              {feedback ? (
+                <p className="tiny" style={{ marginTop: ".8rem", color: submitState === "success" ? "#0b7a3f" : "#9f1239" }}>
+                  {feedback}
+                </p>
+              ) : null}
+
+              <button className="btn" type="submit" disabled={!canSend || isSubmitting} style={{ width: "100%" }}>
+                {isSubmitting ? "Submitting..." : "Submit request to Sedifex"}
               </button>
 
               <p className="tiny" style={{ marginTop: ".8rem" }}>
