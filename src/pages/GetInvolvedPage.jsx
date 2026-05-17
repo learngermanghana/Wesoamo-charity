@@ -90,15 +90,15 @@ export default function GetInvolvedPage() {
 
       const data = await response.json().catch(() => ({}));
       if (!response.ok || !data.ok) {
-        throw new Error(data.error || "Unable to start donation payment. Please try again.");
+        throw new Error(data.error || data.payment?.error || "Unable to start donation payment. Please try again.");
       }
 
-      if (data.payment?.authorizationUrl) {
-        window.location.href = data.payment.authorizationUrl;
-        return;
+      const checkoutUrl = data.payment?.authorizationUrl;
+      if (!checkoutUrl) {
+        throw new Error(data.payment?.error || "Donation was saved, but Paystack checkout could not start. Please contact support or try again.");
       }
 
-      window.location.href = "/donation-success";
+      window.location.href = checkoutUrl;
     } catch (error) {
       setStatus("error");
       setFeedback(error instanceof Error ? error.message : "Unable to submit donation right now.");
