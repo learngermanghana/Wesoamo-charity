@@ -22,6 +22,9 @@ export default function Footer() {
           <Link to="/volunteer">Volunteer</Link>
           <Link to="/request-support">Request Support</Link>
           <Link to="/photos">Photos</Link>
+          <Link to="/faq">FAQs</Link>
+          <Link to="/privacy">Privacy</Link>
+          <Link to="/terms">Terms</Link>
         </div>
       </Container>
     </footer>

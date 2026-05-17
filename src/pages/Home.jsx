@@ -78,23 +78,6 @@ export default function Home() {
           />
           <Testimonials />
 
-          <section className="section" id="frequently-asked-questions">
-            <Container>
-              <div className="sectionHead">
-                <h2>Frequently asked questions</h2>
-                <p>Quick answers about donations, volunteering, and family support services.</p>
-              </div>
-              <div className="grid2">
-                {faq.map((item) => (
-                  <article key={item.q} className="card">
-                    <h3>{item.q}</h3>
-                    <p className="muted">{item.a}</p>
-                  </article>
-                ))}
-              </div>
-            </Container>
-          </section>
-
           <InternalLinksBlock
             title="Looking for support, tools, or stories?"
             subtitle="Use these internal links to move between support assessments, practical ways to help, and inspiring stories."
@@ -105,7 +88,7 @@ export default function Home() {
                 description: "Share your situation privately and get connected to available child-cancer support."
               },
               {
-                href: "/get-involved",
+                href: "/donate",
                 label: "Support tools",
                 description: "Find donation and volunteer options to take action quickly."
               },

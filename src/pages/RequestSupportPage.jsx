@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from "react";
+﻿import { useState } from "react";
 import SEO from "../components/SEO";
 import Container from "../components/Container";
 import InternalLinksBlock from "../components/InternalLinksBlock";
@@ -13,21 +13,6 @@ export default function RequestSupportPage() {
   const [supportType, setSupportType] = useState("Welfare / Financial Support");
   const [urgent, setUrgent] = useState(false);
   const [notes, setNotes] = useState("");
-
-  const waLink = useMemo(() => {
-    const text =
-      `REQUEST SUPPORT - ${org.name}\n\n` +
-      `Caregiver name: ${caregiverName}\n` +
-      `Phone: ${phone}\n` +
-      `Child age: ${childAge}\n` +
-      `Hospital / Clinic: ${hospital}\n` +
-      `Location: ${location}\n` +
-      `Support needed: ${supportType}\n` +
-      `Urgent: ${urgent ? "YES" : "No"}\n\n` +
-      `Notes (please keep it brief):\n${notes || "-"}\n\n` +
-      `Submitted via website.`;
-    return `https://wa.me/${org.whatsapp}?text=${encodeURIComponent(text)}`;
-  }, [caregiverName, phone, childAge, hospital, location, supportType, urgent, notes]);
 
   const canSend =
     caregiverName.trim() && phone.trim() && childAge.toString().trim() && hospital.trim() && location.trim();
@@ -51,10 +36,54 @@ export default function RequestSupportPage() {
     description: "Private request pathway for welfare, counselling, and survivor follow-up support for families."
   };
 
-  function sendWhatsApp(e) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitState, setSubmitState] = useState("idle");
+  const supportRequestIntakeUrl =
+    import.meta.env.VITE_SEDIFEX_SUPPORT_REQUEST_INTAKE_URL?.trim() ||
+    "https://us-central1-sedifex-web.cloudfunctions.net/supportRequestIntake";
+
+  async function submitSupportRequest(e) {
     e.preventDefault();
     if (!canSend) return;
-    window.open(waLink, "_blank", "noopener,noreferrer");
+
+    setIsSubmitting(true);
+    setSubmitState("idle");
+
+    try {
+      const payload = {
+        caregiverName: caregiverName.trim(),
+        phone: phone.trim(),
+        childAge: childAge.toString().trim(),
+        hospital: hospital.trim(),
+        location: location.trim(),
+        supportType: supportType.trim(),
+        urgent,
+        notes: notes.trim(),
+        source: "wesoamochildcancer.com/request-support",
+      };
+
+      const res = await fetch(supportRequestIntakeUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error("Support request failed");
+
+      setSubmitState("success");
+      setCaregiverName("");
+      setPhone("");
+      setChildAge("");
+      setHospital("");
+      setLocation("");
+      setSupportType("Welfare / Financial Support");
+      setUrgent(false);
+      setNotes("");
+    } catch {
+      setSubmitState("error");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -95,14 +124,14 @@ export default function RequestSupportPage() {
 
               <div className="callout" style={{ marginTop: "1rem" }}>
                 <div className="callout__title">Need quick help?</div>
-                <div className="callout__text">Send a private message via WhatsApp</div>
+                <div className="callout__text">Submit this form to send directly to Sedifex</div>
                 <div className="callout__hint">
                   If this is a medical emergency, contact your hospital or emergency services immediately.
                 </div>
               </div>
             </div>
 
-            <form className="card card--form" onSubmit={sendWhatsApp}>
+            <form className="card card--form" onSubmit={submitSupportRequest}>
               <h3 className="card__title">Support request form</h3>
 
               <div className="formGrid">
@@ -153,9 +182,23 @@ export default function RequestSupportPage() {
                 </label>
               </div>
 
-              <button className="btn" type="submit" disabled={!canSend} style={{ width: "100%" }}>
-                Send privately via WhatsApp
+              <button className="btn" type="submit" disabled={!canSend || isSubmitting} style={{ width: "100%" }}>
+                {isSubmitting ? "Submitting..." : "Submit support request"}
               </button>
+
+
+
+              {submitState === "success" ? (
+                <p className="tiny" style={{ marginTop: ".8rem", color: "#0b7a3f" }}>
+                  Thank you, {caregiverName || "caregiver"}. Your request is now safely logged in Sedifex so our team can review and coordinate the best next support step.
+                </p>
+              ) : null}
+
+              {submitState === "error" ? (
+                <p className="tiny" style={{ marginTop: ".8rem", color: "#9f1239" }}>
+                  We could not submit to Sedifex right now. Please try again in a moment.
+                </p>
+              ) : null}
 
               <p className="tiny" style={{ marginTop: ".8rem" }}>
                 By submitting, you agree to be contacted by {org.name}. We treat requests with care and confidentiality.
@@ -168,7 +211,7 @@ export default function RequestSupportPage() {
       <InternalLinksBlock
         links={[
           {
-            href: "/get-involved",
+            href: "/donate",
             label: "Support tools",
             description: "Use donation and volunteer options to support current family needs."
           },
@@ -178,8 +221,8 @@ export default function RequestSupportPage() {
             description: "Read advocacy stories and awareness updates from the foundation."
           },
           {
-            href: "/",
-            label: "Homepage FAQ",
+            href: "/faq",
+            label: "FAQs",
             description: "Review common questions about support, privacy, and next steps."
           }
         ]}

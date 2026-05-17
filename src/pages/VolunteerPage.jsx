@@ -17,18 +17,9 @@ export default function VolunteerPage() {
     import.meta.env.VITE_SEDIFEX_VOLUNTEER_INTAKE_URL?.trim() ||
     "https://us-central1-sedifex-web.cloudfunctions.net/volunteerIntake";
 
-  const waLink = useMemo(() => {
-    const text =
-      `VOLUNTEER APPLICATION - ${org.name}\n\n` +
-      `Full name: ${fullName}\n` +
-      `Phone: ${phone}\n` +
-      `Location: ${location}\n` +
-      `Skills: ${skills}\n` +
-      `Availability: ${availability}\n\n` +
-      `Extra notes:\n${notes || "-"}\n\n` +
-      `Submitted via website.`;
-    return `https://wa.me/${org.whatsapp}?text=${encodeURIComponent(text)}`;
-  }, [fullName, phone, location, skills, availability, notes]);
+  const volunteerIntakeUrl =
+    import.meta.env.VITE_SEDIFEX_VOLUNTEER_INTAKE_URL?.trim() ||
+    "https://us-central1-sedifex-web.cloudfunctions.net/volunteerIntake";
 
   const canSend = fullName.trim() && phone.trim() && location.trim() && skills.trim() && availability.trim();
 
