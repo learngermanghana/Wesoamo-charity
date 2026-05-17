@@ -1,73 +1,79 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import SEO from "../components/SEO";
 import Container from "../components/Container";
-import { contactLinks, org } from "../data/org";
+import { org } from "../data/org";
+
+const sedifexStoreId = import.meta.env.VITE_SEDIFEX_STORE_ID?.trim() ?? "";
+
+function clean(value, max = 500) {
+  return String(value || "").trim().slice(0, max);
+}
 
 export default function VolunteerPage() {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [skills, setSkills] = useState("");
   const [availability, setAvailability] = useState("");
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitState, setSubmitState] = useState("idle");
+  const [feedback, setFeedback] = useState("");
 
-  const volunteerIntakeEndpoint =
-    import.meta.env.VITE_SEDIFEX_VOLUNTEER_INTAKE_URL?.trim() ||
-    "https://us-central1-sedifex-web.cloudfunctions.net/volunteerIntake";
-
-  const waLink = useMemo(() => {
-    const text =
-      `VOLUNTEER APPLICATION - ${org.name}\n\n` +
-      `Full name: ${fullName}\n` +
-      `Phone: ${phone}\n` +
-      `Location: ${location}\n` +
-      `Skills: ${skills}\n` +
-      `Availability: ${availability}\n\n` +
-      `Extra notes:\n${notes || "-"}\n\n` +
-      `Submitted via website.`;
-    return `https://wa.me/${contactLinks.contact.whatsapp || org.whatsapp}?text=${encodeURIComponent(text)}`;
-  }, [fullName, phone, location, skills, availability, notes]);
-
-  const canSend = fullName.trim() && phone.trim() && location.trim() && skills.trim() && availability.trim();
+  const canSend = fullName.trim() && (phone.trim() || email.trim()) && location.trim() && skills.trim() && availability.trim();
 
   async function submitVolunteer(e) {
     e.preventDefault();
     if (!canSend) return;
 
+    if (!sedifexStoreId) {
+      setSubmitState("error");
+      setFeedback("Setup needed: add VITE_SEDIFEX_STORE_ID in Vercel.");
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitState("idle");
+    setFeedback("");
 
     try {
       const payload = {
-        name: fullName.trim(),
-        phone: phone.trim(),
-        location: location.trim(),
-        skills: skills.trim(),
-        availability: availability.trim(),
-        notes: notes.trim(),
-        source: "wesoamochildcancer.com/volunteer",
+        storeId: sedifexStoreId,
+        name: clean(fullName, 140),
+        phone: clean(phone, 80),
+        email: clean(email, 180).toLowerCase(),
+        location: clean(location, 180),
+        skills: clean(skills, 250),
+        availability: clean(availability, 180),
+        notes: clean(notes, 1000),
+        source: "wesoamo-charity-website",
+        sourcePage: "/volunteer",
+        sourceChannel: "wesoamo-charity-website",
+        pageType: "volunteer"
       };
 
-      const res = await fetch(volunteerIntakeEndpoint, {
+      const res = await fetch("/api/volunteer-intake", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+      const data = await res.json().catch(() => ({}));
 
-      if (!res.ok) throw new Error("Volunteer signup failed");
+      if (!res.ok || data?.error) throw new Error(data?.error || "Volunteer signup failed");
 
       setSubmitState("success");
+      setFeedback("Success! Your volunteer signup has been saved in Sedifex. Our team will contact you with next steps.");
       setFullName("");
       setPhone("");
+      setEmail("");
       setLocation("");
       setSkills("");
       setAvailability("");
       setNotes("");
-    } catch {
+    } catch (error) {
       setSubmitState("error");
-      window.open(waLink, "_blank", "noopener,noreferrer");
+      setFeedback(error instanceof Error ? error.message : "Unable to submit volunteer application right now.");
     } finally {
       setIsSubmitting(false);
     }
@@ -104,11 +110,9 @@ export default function VolunteerPage() {
               </ul>
 
               <div className="callout" style={{ marginTop: "1rem" }}>
-                <div className="callout__title">Fastest response</div>
-                <div className="callout__text">Submit this form to send directly to Sedifex</div>
-                <div className="callout__hint">
-                  We’ll reply as soon as possible with next steps.
-                </div>
+                <div className="callout__title">Connected to Sedifex</div>
+                <div className="callout__text">Volunteer applications are saved directly in Sedifex for review and follow-up.</div>
+                <div className="callout__hint">We’ll reply as soon as possible with next steps.</div>
               </div>
             </div>
 
@@ -122,8 +126,13 @@ export default function VolunteerPage() {
                 </label>
 
                 <label className="field">
-                  <span>Phone / WhatsApp *</span>
-                  <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="e.g. 0555945515" required />
+                  <span>Phone / WhatsApp</span>
+                  <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="e.g. 0555945515" />
+                </label>
+
+                <label className="field">
+                  <span>Email</span>
+                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" />
                 </label>
 
                 <label className="field">
@@ -151,20 +160,14 @@ export default function VolunteerPage() {
                 {isSubmitting ? "Submitting..." : "Sign up as volunteer"}
               </button>
 
-              {submitState === "success" ? (
-                <p className="tiny" style={{ marginTop: ".8rem", color: "#0b7a3f" }}>
-                  Success! Your volunteer signup has been sent. Our team will contact you with next steps.
-                </p>
-              ) : null}
-
-              {submitState === "error" ? (
-                <p className="tiny" style={{ marginTop: ".8rem", color: "#9f1239" }}>
-                  We could not submit directly to Sedifex right now. We opened WhatsApp as backup so your application can still be delivered.
+              {feedback ? (
+                <p className="tiny" style={{ marginTop: ".8rem", color: submitState === "success" ? "#0b7a3f" : "#9f1239" }}>
+                  {feedback}
                 </p>
               ) : null}
 
               <p className="tiny" style={{ marginTop: ".8rem" }}>
-                By submitting, you agree to be contacted by {org.name} using the details provided.
+                By submitting, you agree to be contacted by {org.name} using the details provided. At least phone or email is required.
               </p>
             </form>
           </div>
