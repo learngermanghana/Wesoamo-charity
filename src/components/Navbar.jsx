@@ -5,6 +5,7 @@ import { org } from "../data/org";
 
 const navLinks = [
   { label: "Home", to: "/" },
+  { label: "Donor", to: "/get-involved" },
   { label: "Gallery", to: "/photos" },
   { label: "FAQs", to: "/#frequently-asked-questions" },
   { label: "Inspiring Stories", to: "/inspiring-stories" },
