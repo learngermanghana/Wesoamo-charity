@@ -7,8 +7,7 @@ const navLinks = [
   { label: "Home", to: "/" },
   { label: "Get Involved", to: "/get-involved" },
   { label: "Gallery", to: "/photos" },
-  { label: "FAQs", to: "/#frequently-asked-questions" },
-  { label: "Inspiring Stories", to: "/inspiring-stories" },
+    { label: "Inspiring Stories", to: "/inspiring-stories" },
   { label: "Transparency", to: "/transparency" },
   { label: "Volunteer", to: "/volunteer" },
   { label: "Request Support", to: "/request-support" }

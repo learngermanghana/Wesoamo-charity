@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from "react";
+import { useState } from "react";
 import SEO from "../components/SEO";
 import Container from "../components/Container";
 import { org } from "../data/org";
@@ -10,26 +10,53 @@ export default function VolunteerPage() {
   const [skills, setSkills] = useState("");
   const [availability, setAvailability] = useState("");
   const [notes, setNotes] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitState, setSubmitState] = useState("idle");
 
-  const waLink = useMemo(() => {
-    const text =
-      `VOLUNTEER APPLICATION - ${org.name}\n\n` +
-      `Full name: ${fullName}\n` +
-      `Phone: ${phone}\n` +
-      `Location: ${location}\n` +
-      `Skills: ${skills}\n` +
-      `Availability: ${availability}\n\n` +
-      `Extra notes:\n${notes || "-"}\n\n` +
-      `Submitted via website.`;
-    return `https://wa.me/${org.whatsapp}?text=${encodeURIComponent(text)}`;
-  }, [fullName, phone, location, skills, availability, notes]);
+  const volunteerIntakeUrl =
+    import.meta.env.VITE_SEDIFEX_VOLUNTEER_INTAKE_URL?.trim() ||
+    "https://us-central1-sedifex-web.cloudfunctions.net/volunteerIntake";
 
   const canSend = fullName.trim() && phone.trim() && location.trim() && skills.trim() && availability.trim();
 
-  function sendWhatsApp(e) {
+  async function submitVolunteer(e) {
     e.preventDefault();
     if (!canSend) return;
-    window.open(waLink, "_blank", "noopener,noreferrer");
+
+    setIsSubmitting(true);
+    setSubmitState("idle");
+
+    try {
+      const payload = {
+        name: fullName.trim(),
+        phone: phone.trim(),
+        location: location.trim(),
+        skills: skills.trim(),
+        availability: availability.trim(),
+        notes: notes.trim(),
+        source: "wesoamochildcancer.com/volunteer",
+      };
+
+      const res = await fetch(volunteerIntakeUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error("Volunteer signup failed");
+
+      setSubmitState("success");
+      setFullName("");
+      setPhone("");
+      setLocation("");
+      setSkills("");
+      setAvailability("");
+      setNotes("");
+    } catch {
+      setSubmitState("error");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -64,14 +91,14 @@ export default function VolunteerPage() {
 
               <div className="callout" style={{ marginTop: "1rem" }}>
                 <div className="callout__title">Fastest response</div>
-                <div className="callout__text">Send your application via WhatsApp</div>
+                <div className="callout__text">Submit this form to send directly to Sedifex</div>
                 <div className="callout__hint">
                   We’ll reply as soon as possible with next steps.
                 </div>
               </div>
             </div>
 
-            <form className="card card--form" onSubmit={sendWhatsApp}>
+            <form className="card card--form" onSubmit={submitVolunteer}>
               <h3 className="card__title">Volunteer application</h3>
 
               <div className="formGrid">
@@ -106,9 +133,21 @@ export default function VolunteerPage() {
                 </label>
               </div>
 
-              <button className="btn" type="submit" disabled={!canSend} style={{ width: "100%" }}>
-                Send via WhatsApp
+              <button className="btn" type="submit" disabled={!canSend || isSubmitting} style={{ width: "100%" }}>
+                {isSubmitting ? "Submitting..." : "Sign up as volunteer"}
               </button>
+
+              {submitState === "success" ? (
+                <p className="tiny" style={{ marginTop: ".8rem", color: "#0b7a3f" }}>
+                  Thank you, {fullName || "volunteer"}. Your signup is now in Sedifex, which helps us match your skills to the right project and follow up faster.
+                </p>
+              ) : null}
+
+              {submitState === "error" ? (
+                <p className="tiny" style={{ marginTop: ".8rem", color: "#9f1239" }}>
+                  We could not submit to Sedifex right now. Please try again in a moment.
+                </p>
+              ) : null}
 
               <p className="tiny" style={{ marginTop: ".8rem" }}>
                 By submitting, you agree to be contacted by {org.name} using the details provided.

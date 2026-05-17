@@ -3,22 +3,6 @@ import Container from "../components/Container";
 import { org } from "../data/org";
 
 export default function GetInvolvedPage() {
-  const waDonate =
-    "https://wa.me/" +
-    org.whatsapp +
-    "?text=" +
-    encodeURIComponent(
-      "Hello " + org.name + ", I want to donate. Please share donation details / options."
-    );
-
-  const waVolunteer =
-    "https://wa.me/" +
-    org.whatsapp +
-    "?text=" +
-    encodeURIComponent(
-      "Hello " + org.name + ", I want to volunteer. Please share how to join and the next steps."
-    );
-
   return (
     <>
       <SEO title="Get Involved" path="/get-involved" />
@@ -34,41 +18,21 @@ export default function GetInvolvedPage() {
       <section className="section">
         <Container>
           <div id="donate" className="card card--wide">
-            <h2>Donate</h2>
+            <h2>Donate with Sedifex</h2>
             <p className="muted">
-              Donations help fund treatment, transportation for early diagnosis, welfare needs, emergency assistance, and counselling support for families.
+              Use the full donor page to enter your details, choose amount, and complete payment securely. Donations help fund treatment, transportation for early diagnosis, welfare needs, emergency assistance, and counselling support for families.
             </p>
 
             <div className="note">
-              <strong>Need donation options?</strong> WhatsApp us for MoMo / other available channels.
+              <strong>Preferred option:</strong> Open the donor page below and complete your donation form directly.
             </div>
 
             <div className="btnRow" style={{ marginTop: ".8rem" }}>
-              <a className="btn btn--primary" href={waDonate} target="_blank" rel="noreferrer">
-                Donate via WhatsApp
+              <a className="btn btn--primary" href={org.donateUrl} target="_blank" rel="noreferrer">
+                Open donor page
               </a>
-              <a className="btn btn--outline" href={org.facebook} target="_blank" rel="noreferrer">
-                Message on Facebook
-              </a>
-            </div>
-          </div>
-
-          <div id="volunteer" className="card card--wide" style={{ marginTop: "1rem" }}>
-            <h2>Volunteer</h2>
-            <p className="muted">
-              Volunteers help with awareness outreach, fundraising, hospital projects, administration, and communications.
-            </p>
-
-            <div className="note">
-              <strong>Volunteer areas:</strong> outreach • fundraising • hospital projects • admin • media
-            </div>
-
-            <div className="btnRow" style={{ marginTop: ".8rem" }}>
-              <a className="btn btn--primary" href={waVolunteer} target="_blank" rel="noreferrer">
-                Volunteer via WhatsApp
-              </a>
-              <a className="btn btn--outline" href={"tel:" + org.phoneE164}>
-                Call us
+              <a className="btn btn--outline" href={org.volunteerFormUrl}>
+                Go to volunteer form
               </a>
             </div>
           </div>
