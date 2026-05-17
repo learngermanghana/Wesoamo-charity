@@ -13,7 +13,7 @@ export default function VolunteerPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitState, setSubmitState] = useState("idle");
 
-  const volunteerIntakeUrl =
+  const volunteerIntakeEndpoint =
     import.meta.env.VITE_SEDIFEX_VOLUNTEER_INTAKE_URL?.trim() ||
     "https://us-central1-sedifex-web.cloudfunctions.net/volunteerIntake";
 
@@ -50,7 +50,7 @@ export default function VolunteerPage() {
         source: "wesoamochildcancer.com/volunteer",
       };
 
-      const res = await fetch(volunteerIntakeUrl, {
+      const res = await fetch(volunteerIntakeEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
