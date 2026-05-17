@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import SEO from "../components/SEO";
 import Container from "../components/Container";
 import { org } from "../data/org";
@@ -10,6 +10,12 @@ export default function VolunteerPage() {
   const [skills, setSkills] = useState("");
   const [availability, setAvailability] = useState("");
   const [notes, setNotes] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitState, setSubmitState] = useState("idle");
+
+  const volunteerIntakeUrl =
+    import.meta.env.VITE_SEDIFEX_VOLUNTEER_INTAKE_URL?.trim() ||
+    "https://us-central1-sedifex-web.cloudfunctions.net/volunteerIntake";
 
   const waLink = useMemo(() => {
     const text =
@@ -26,10 +32,45 @@ export default function VolunteerPage() {
 
   const canSend = fullName.trim() && phone.trim() && location.trim() && skills.trim() && availability.trim();
 
-  function sendWhatsApp(e) {
+  async function submitVolunteer(e) {
     e.preventDefault();
     if (!canSend) return;
-    window.open(waLink, "_blank", "noopener,noreferrer");
+
+    setIsSubmitting(true);
+    setSubmitState("idle");
+
+    try {
+      const payload = {
+        name: fullName.trim(),
+        phone: phone.trim(),
+        location: location.trim(),
+        skills: skills.trim(),
+        availability: availability.trim(),
+        notes: notes.trim(),
+        source: "wesoamochildcancer.com/volunteer",
+      };
+
+      const res = await fetch(volunteerIntakeUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error("Volunteer signup failed");
+
+      setSubmitState("success");
+      setFullName("");
+      setPhone("");
+      setLocation("");
+      setSkills("");
+      setAvailability("");
+      setNotes("");
+    } catch {
+      setSubmitState("error");
+      window.open(waLink, "_blank", "noopener,noreferrer");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -64,14 +105,14 @@ export default function VolunteerPage() {
 
               <div className="callout" style={{ marginTop: "1rem" }}>
                 <div className="callout__title">Fastest response</div>
-                <div className="callout__text">Send your application via WhatsApp</div>
+                <div className="callout__text">Submit this form to send directly to Sedifex</div>
                 <div className="callout__hint">
                   We’ll reply as soon as possible with next steps.
                 </div>
               </div>
             </div>
 
-            <form className="card card--form" onSubmit={sendWhatsApp}>
+            <form className="card card--form" onSubmit={submitVolunteer}>
               <h3 className="card__title">Volunteer application</h3>
 
               <div className="formGrid">
@@ -106,9 +147,21 @@ export default function VolunteerPage() {
                 </label>
               </div>
 
-              <button className="btn" type="submit" disabled={!canSend} style={{ width: "100%" }}>
-                Send via WhatsApp
+              <button className="btn" type="submit" disabled={!canSend || isSubmitting} style={{ width: "100%" }}>
+                {isSubmitting ? "Submitting..." : "Sign up as volunteer"}
               </button>
+
+              {submitState === "success" ? (
+                <p className="tiny" style={{ marginTop: ".8rem", color: "#0b7a3f" }}>
+                  Success! Your volunteer signup has been sent. Our team will contact you with next steps.
+                </p>
+              ) : null}
+
+              {submitState === "error" ? (
+                <p className="tiny" style={{ marginTop: ".8rem", color: "#9f1239" }}>
+                  We could not submit directly to Sedifex right now. We opened WhatsApp as backup so your application can still be delivered.
+                </p>
+              ) : null}
 
               <p className="tiny" style={{ marginTop: ".8rem" }}>
                 By submitting, you agree to be contacted by {org.name} using the details provided.
