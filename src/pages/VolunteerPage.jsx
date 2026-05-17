@@ -25,7 +25,7 @@ export default function VolunteerPage() {
 
   async function submitVolunteer(e) {
     e.preventDefault();
-    if (!canSend) return;
+    if (!canSend || isSubmitting) return;
 
     if (!sedifexStoreId) {
       setSubmitState("error");
@@ -41,6 +41,7 @@ export default function VolunteerPage() {
       const payload = {
         storeId: sedifexStoreId,
         name: clean(fullName, 140),
+        fullName: clean(fullName, 140),
         phone: clean(phone, 80),
         email: clean(email, 180).toLowerCase(),
         location: clean(location, 180),
@@ -60,17 +61,9 @@ export default function VolunteerPage() {
       });
       const data = await res.json().catch(() => ({}));
 
-      if (!res.ok || data?.error) throw new Error(data?.error || "Volunteer signup failed");
+      if (!res.ok || data?.error || data?.ok === false) throw new Error(data?.error || "Volunteer signup failed");
 
-      setSubmitState("success");
-      setFeedback("Success! Your volunteer signup has been saved in Sedifex. Our team will contact you with next steps.");
-      setFullName("");
-      setPhone("");
-      setEmail("");
-      setLocation("");
-      setSkills("");
-      setAvailability("");
-      setNotes("");
+      window.location.href = "/volunteer-success";
     } catch (error) {
       setSubmitState("error");
       setFeedback(error instanceof Error ? error.message : "Unable to submit volunteer application right now.");
@@ -156,15 +149,15 @@ export default function VolunteerPage() {
                 </label>
               </div>
 
-              <button className="btn" type="submit" disabled={!canSend || isSubmitting} style={{ width: "100%" }}>
-                {isSubmitting ? "Submitting..." : "Sign up as volunteer"}
-              </button>
-
               {feedback ? (
                 <p className="tiny" style={{ marginTop: ".8rem", color: submitState === "success" ? "#0b7a3f" : "#9f1239" }}>
                   {feedback}
                 </p>
               ) : null}
+
+              <button className="btn" type="submit" disabled={!canSend || isSubmitting} style={{ width: "100%" }}>
+                {isSubmitting ? "Submitting..." : "Submit volunteer application to Sedifex"}
+              </button>
 
               <p className="tiny" style={{ marginTop: ".8rem" }}>
                 By submitting, you agree to be contacted by {org.name} using the details provided. At least phone or email is required.
