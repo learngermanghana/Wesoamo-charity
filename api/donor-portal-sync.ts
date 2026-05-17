@@ -34,6 +34,36 @@ function resolveReturnUrl(req: VercelRequest) {
   return origin ? `${origin.replace(/\/$/, '')}/donation-success` : undefined
 }
 
+function checkoutEndpoints() {
+  const explicit = text(process.env.SEDIFEX_CHECKOUT_CREATE_URL, 900)
+  if (explicit) return [explicit]
+
+  const base = getSedifexBaseUrl()
+  const cloudFunctionUrl = `${base}/integrationCheckoutCreate`
+  const documentedUrl = `${base}/integration/checkout/create`
+
+  if (base.includes('cloudfunctions.net')) return [cloudFunctionUrl, documentedUrl]
+  return [documentedUrl, cloudFunctionUrl]
+}
+
+async function readResponse(response: Response) {
+  const raw = await response.text().catch(() => '')
+  if (!raw) return { raw, data: {} as Record<string, unknown> }
+  try {
+    return { raw, data: JSON.parse(raw) as Record<string, unknown> }
+  } catch {
+    return { raw, data: {} as Record<string, unknown> }
+  }
+}
+
+function summarizeError(status: number, data: Record<string, unknown>, raw: string) {
+  const direct = text(data.error ?? data.message, 400)
+  if (direct) return direct
+  if (raw.includes('502') || raw.toLowerCase().includes('bad gateway')) return 'Sedifex checkout endpoint returned 502 Bad Gateway.'
+  if (raw.includes('404') || raw.toLowerCase().includes('not found')) return 'Sedifex checkout endpoint was not found. Check the checkout URL/function path.'
+  return `Sedifex checkout failed with status ${status}.`
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'method-not-allowed' })
 
@@ -51,79 +81,82 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const metadata = req.body?.metadata && typeof req.body.metadata === 'object' ? req.body.metadata as Record<string, unknown> : {}
 
   if (!storeId) return res.status(500).json({ ok: false, error: 'SEDIFEX_STORE_ID is not configured for this charity website.' })
-  if (!apiKey) return res.status(500).json({ ok: false, error: 'SEDIFEX_INTEGRATION_API_KEY is not configured for this charity website server.' })
+  if (!apiKey) return res.status(500).json({ ok: false, error: 'SEDIFEX_INTEGRATION_API_KEY or SEDIFEX_INTEGRATION_KEY is not configured for this charity website server.' })
   if (!donorName) return res.status(400).json({ ok: false, error: 'Donor name is required.' })
   if (!donorEmail) return res.status(400).json({ ok: false, error: 'Donor email is required for Paystack checkout.' })
   if (!amount || amount <= 0) return res.status(400).json({ ok: false, error: 'Valid donation amount is required.' })
 
-  try {
-    const endpoint = `${getSedifexBaseUrl()}/integration/checkout/create`
-    const sedifexPayload = {
-      storeId,
+  const sedifexPayload = {
+    storeId,
+    clientOrderId,
+    orderType: 'custom',
+    amount,
+    currency,
+    customer: {
+      name: donorName,
+      email: donorEmail,
+      phone: donorPhone || null,
+    },
+    returnUrl,
+    sourceChannel,
+    sourceLabel: 'Wesoamo donation form',
+    metadata: {
+      ...metadata,
+      pageType: 'donation',
+      project: text(req.body?.pageId, 120) || text(metadata.project, 180) || 'Wesoamo donation',
+      donorName,
+      donorPhone: donorPhone || null,
+      donorEmail,
+      anonymous: Boolean(metadata.anonymous),
+      source: text(metadata.source, 120) || sourceChannel,
+      sourcePage: text(metadata.sourcePage, 120) || '/get-involved',
       clientOrderId,
-      orderType: 'custom',
-      amount,
-      currency,
-      customer: {
-        name: donorName,
-        email: donorEmail,
-        phone: donorPhone || null,
-      },
-      returnUrl,
-      sourceChannel,
-      sourceLabel: 'Wesoamo donation form',
-      metadata: {
-        ...metadata,
-        pageType: 'donation',
-        project: text(req.body?.pageId, 120) || text(metadata.project, 180) || 'Wesoamo donation',
-        donorName,
-        donorPhone: donorPhone || null,
-        donorEmail,
-        anonymous: Boolean(metadata.anonymous),
-        source: text(metadata.source, 120) || sourceChannel,
-        sourcePage: text(metadata.sourcePage, 120) || '/get-involved',
-        clientOrderId,
-      },
-    }
-
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        'x-api-key': apiKey,
-        'X-Sedifex-Contract-Version': CONTRACT_VERSION,
-      },
-      body: JSON.stringify(sedifexPayload),
-    })
-
-    const data = await response.json().catch(() => ({})) as Record<string, unknown>
-    const authorizationUrl = text(data.authorizationUrl ?? data.checkoutUrl, 1000)
-
-    if (!response.ok || !authorizationUrl) {
-      return res.status(response.ok ? 502 : response.status).json({
-        ok: false,
-        error: text(data.error, 300) || 'Sedifex checkout did not return a Paystack URL.',
-        sedifex: data,
-      })
-    }
-
-    return res.status(200).json({
-      ok: true,
-      reference: data.reference ?? data.payment_reference ?? null,
-      sedifexOrderId: data.orderId ?? data.reference ?? null,
-      clientOrderId,
-      payment: {
-        authorizationUrl,
-        reference: data.reference ?? data.payment_reference ?? null,
-        accessCode: data.accessCode ?? null,
-      },
-      sedifex: data,
-    })
-  } catch (error) {
-    return res.status(502).json({
-      ok: false,
-      error: error instanceof Error ? error.message : 'Unable to create Sedifex checkout.',
-    })
+    },
   }
+
+  const attempts: Array<{ endpoint: string; status?: number; error?: string }> = []
+
+  for (const endpoint of checkoutEndpoints()) {
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'x-api-key': apiKey,
+          'X-Sedifex-Contract-Version': CONTRACT_VERSION,
+        },
+        body: JSON.stringify(sedifexPayload),
+      })
+
+      const { raw, data } = await readResponse(response)
+      const authorizationUrl = text(data.authorizationUrl ?? data.checkoutUrl, 1000)
+
+      if (response.ok && authorizationUrl) {
+        return res.status(200).json({
+          ok: true,
+          reference: data.reference ?? data.payment_reference ?? null,
+          sedifexOrderId: data.orderId ?? data.reference ?? null,
+          clientOrderId,
+          payment: {
+            authorizationUrl,
+            reference: data.reference ?? data.payment_reference ?? null,
+            accessCode: data.accessCode ?? null,
+          },
+          sedifex: data,
+        })
+      }
+
+      attempts.push({ endpoint, status: response.status, error: summarizeError(response.status, data, raw) })
+    } catch (error) {
+      attempts.push({ endpoint, error: error instanceof Error ? error.message : 'request-failed' })
+    }
+  }
+
+  const last = attempts[attempts.length - 1]
+  return res.status(502).json({
+    ok: false,
+    error: last?.error || 'Unable to create Sedifex checkout.',
+    attempts,
+  })
 }
