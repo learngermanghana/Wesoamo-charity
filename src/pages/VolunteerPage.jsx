@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import SEO from "../components/SEO";
 import Container from "../components/Container";
-import { org } from "../data/org";
+import { contactLinks, org } from "../data/org";
 
 export default function VolunteerPage() {
   const [fullName, setFullName] = useState("");
@@ -27,7 +27,7 @@ export default function VolunteerPage() {
       `Availability: ${availability}\n\n` +
       `Extra notes:\n${notes || "-"}\n\n` +
       `Submitted via website.`;
-    return `https://wa.me/${org.whatsapp}?text=${encodeURIComponent(text)}`;
+    return `https://wa.me/${contactLinks.contact.whatsapp || org.whatsapp}?text=${encodeURIComponent(text)}`;
   }, [fullName, phone, location, skills, availability, notes]);
 
   const canSend = fullName.trim() && phone.trim() && location.trim() && skills.trim() && availability.trim();

@@ -1,6 +1,6 @@
 ﻿import { useMemo, useState } from "react";
 import Container from "./Container";
-import { org } from "../data/org";
+import { contactLinks, org } from "../data/org";
 
 export default function Contact() {
   const [name, setName] = useState("");
@@ -14,7 +14,7 @@ export default function Contact() {
       `I am contacting as: ${role}\n\n` +
       `Message:\n${message}\n\n` +
       `Please share next steps.`;
-    return `https://wa.me/${org.whatsapp}?text=${encodeURIComponent(msg)}`;
+    return `https://wa.me/${contactLinks.contact.whatsapp || org.whatsapp}?text=${encodeURIComponent(msg)}`;
   }, [name, role, message]);
 
   function submit(e) {
@@ -33,15 +33,15 @@ export default function Contact() {
         <div className="twoCol">
           <div className="card">
             <h3>Reach us</h3>
-            <div className="kv"><span>Phone</span><a href={"tel:" + org.phoneE164}>{org.phoneRaw}</a></div>
-            <div className="kv"><span>Email</span><a href={"mailto:" + org.email}>{org.email}</a></div>
-            <div className="kv"><span>Facebook</span><a href={org.facebook} target="_blank" rel="noreferrer">Visit our page</a></div>
+            <div className="kv"><span>Phone</span><a href={"tel:" + (contactLinks.contact.phone || org.phoneE164)}>{org.phoneRaw}</a></div>
+            <div className="kv"><span>Email</span><a href={"mailto:" + (contactLinks.contact.email || org.email)}>{contactLinks.contact.email || org.email}</a></div>
+            <div className="kv"><span>Facebook</span><a href={contactLinks.social.facebook || org.facebook} target="_blank" rel="noreferrer">Visit our page</a></div>
             <div className="kv"><span>Map location</span><a href={org.mapUrl} target="_blank" rel="noreferrer">Open on Google Maps</a></div>
 
             <div className="btnRow" style={{ marginTop: ".8rem" }}>
               <a className="btn btn--primary" href={org.donateUrl} target="_blank" rel="noreferrer">Donate</a>
               <a className="btn btn--outline" href={waLink} target="_blank" rel="noreferrer">WhatsApp us</a>
-              <a className="btn btn--outline" href={org.facebook} target="_blank" rel="noreferrer">Message on Facebook</a>
+              <a className="btn btn--outline" href={contactLinks.social.facebook || org.facebook} target="_blank" rel="noreferrer">Message on Facebook</a>
             </div>
           </div>
 

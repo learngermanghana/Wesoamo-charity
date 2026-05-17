@@ -1,8 +1,8 @@
 ﻿import { Link } from "react-router-dom";
-import { org } from "../data/org";
+import { contactLinks, org } from "../data/org";
 
 export default function FloatingActions() {
-  const wa = `https://wa.me/${org.whatsapp}?text=${encodeURIComponent(
+  const wa = `https://wa.me/${contactLinks.contact.whatsapp || org.whatsapp}?text=${encodeURIComponent(
     "Hello " + org.name + ", I want to get involved. Please share how to donate/volunteer."
   )}`;
 

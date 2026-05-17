@@ -1,5 +1,5 @@
 ﻿import Container from "./Container";
-import { org } from "../data/org";
+import { contactLinks, org } from "../data/org";
 import { homepageGallery } from "../data/homepageGallery";
 
 export default function Hero() {
@@ -16,7 +16,7 @@ export default function Hero() {
           <div className="hero__cta">
             <a
               className="btn btn--primary"
-              href={`https://wa.me/${org.whatsapp}?text=${encodeURIComponent("Hello " + org.name + ", I want to donate. Please share donation details / options.")}`}
+              href={`https://wa.me/${contactLinks.contact.whatsapp || org.whatsapp}?text=${encodeURIComponent("Hello " + org.name + ", I want to donate. Please share donation details / options.")}`}
               target="_blank"
               rel="noreferrer"
             >

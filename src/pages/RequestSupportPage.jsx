@@ -2,7 +2,7 @@
 import SEO from "../components/SEO";
 import Container from "../components/Container";
 import InternalLinksBlock from "../components/InternalLinksBlock";
-import { org } from "../data/org";
+import { contactLinks, org } from "../data/org";
 
 export default function RequestSupportPage() {
   const [caregiverName, setCaregiverName] = useState("");
@@ -26,7 +26,7 @@ export default function RequestSupportPage() {
       `Urgent: ${urgent ? "YES" : "No"}\n\n` +
       `Notes (please keep it brief):\n${notes || "-"}\n\n` +
       `Submitted via website.`;
-    return `https://wa.me/${org.whatsapp}?text=${encodeURIComponent(text)}`;
+    return `https://wa.me/${contactLinks.contact.whatsapp || org.whatsapp}?text=${encodeURIComponent(text)}`;
   }, [caregiverName, phone, childAge, hospital, location, supportType, urgent, notes]);
 
   const canSend =

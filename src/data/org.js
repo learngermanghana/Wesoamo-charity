@@ -30,3 +30,25 @@ export const org = {
   logoPath: "/images/logo.jpg",
   baseUrl: "https://www.wesoamochildcancer.com"
 };
+
+export const contactLinks = {
+  brand: {
+    name: org.name,
+    logoUrl: `${org.baseUrl}${org.logoPath}`
+  },
+  contact: {
+    phone: org.phoneE164,
+    whatsapp: org.whatsapp,
+    telegram: "",
+    email: org.email,
+    website: org.baseUrl
+  },
+  social: {
+    instagram: "",
+    facebook: org.facebook,
+    tiktok: "",
+    youtube: "",
+    x: "",
+    linkedin: ""
+  }
+};
