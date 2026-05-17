@@ -2,7 +2,7 @@
 
 This repository contains the public website and a Firebase-backed admin reporting flow.
 
-## Admin reporting (Firebase)
+## Admin reporting (Firebase).
 
 The admin reporting flow now includes:
 
