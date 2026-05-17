@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import SEO from "../components/SEO";
 import Container from "../components/Container";
-import { org } from "../data/org";
+import { contactLinks, org } from "../data/org";
 import { fundUse as fallbackFundUse, transparencyMeta as fallbackMeta, accountability } from "../data/transparency";
 import { getPublicTransparencySnapshot } from "../services/adminReports";
 
@@ -38,7 +38,7 @@ export default function TransparencyPage() {
     [snapshot]
   );
 
-  const wa = `https://wa.me/${org.whatsapp}?text=${encodeURIComponent(
+  const wa = `https://wa.me/${contactLinks.contact.whatsapp || org.whatsapp}?text=${encodeURIComponent(
     "Hello " + org.name + ", I would like to support. Please share local donation options and details."
   )}`;
 

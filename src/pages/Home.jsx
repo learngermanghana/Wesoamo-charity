@@ -13,7 +13,7 @@ import Container from "../components/Container";
 import InternalLinksBlock from "../components/InternalLinksBlock";
 
 import { faq } from "../data/faq";
-import { org } from "../data/org";
+import { contactLinks, org } from "../data/org";
 
 export default function Home() {
   const [showMore, setShowMore] = useState(false);
@@ -24,11 +24,11 @@ export default function Home() {
     name: org.name,
     url: org.baseUrl,
     description: org.mission,
-    logo: `${org.baseUrl}${org.logoPath}`,
-    email: org.email,
-    telephone: org.phoneE164,
+    logo: contactLinks.brand.logoUrl || `${org.baseUrl}${org.logoPath}`,
+    email: contactLinks.contact.email || org.email,
+    telephone: contactLinks.contact.phone || org.phoneE164,
     areaServed: org.region,
-    sameAs: [org.facebook].filter(Boolean)
+    sameAs: [contactLinks.social.facebook, contactLinks.social.instagram, contactLinks.social.tiktok, contactLinks.social.youtube, contactLinks.social.linkedin].filter(Boolean)
   };
 
   const faqSchema = {
