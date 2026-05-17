@@ -5,12 +5,6 @@ import Container from "../components/Container";
 const presetAmounts = [25, 50, 100, 200, 500];
 const sedifexStoreId = import.meta.env.VITE_SEDIFEX_STORE_ID?.trim() ?? "";
 
-type DonationResponse = {
-  ok?: boolean;
-  payment?: { authorizationUrl?: string | null } | null;
-  error?: string;
-};
-
 function clean(value, max = 500) {
   return String(value || "").trim().slice(0, max);
 }
@@ -94,7 +88,7 @@ export default function GetInvolvedPage() {
         })
       });
 
-      const data = (await response.json().catch(() => ({}))) as DonationResponse;
+      const data = await response.json().catch(() => ({}));
       if (!response.ok || !data.ok) {
         throw new Error(data.error || "Unable to start donation payment. Please try again.");
       }
