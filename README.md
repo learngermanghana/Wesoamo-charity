@@ -1,4 +1,4 @@
-# Wesoamo Foundation Site
+# Wesoamo Foundation Site.
 
 This repository contains the public website and a Firebase-backed admin reporting flow.
 
