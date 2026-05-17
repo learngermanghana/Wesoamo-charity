@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import SEO from "../components/SEO";
 import Container from "../components/Container";
 import { org } from "../data/org";
@@ -12,6 +12,10 @@ export default function VolunteerPage() {
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitState, setSubmitState] = useState("idle");
+
+  const volunteerIntakeUrl =
+    import.meta.env.VITE_SEDIFEX_VOLUNTEER_INTAKE_URL?.trim() ||
+    "https://us-central1-sedifex-web.cloudfunctions.net/volunteerIntake";
 
   const volunteerIntakeUrl =
     import.meta.env.VITE_SEDIFEX_VOLUNTEER_INTAKE_URL?.trim() ||
@@ -54,6 +58,7 @@ export default function VolunteerPage() {
       setNotes("");
     } catch {
       setSubmitState("error");
+      window.open(waLink, "_blank", "noopener,noreferrer");
     } finally {
       setIsSubmitting(false);
     }
@@ -139,13 +144,13 @@ export default function VolunteerPage() {
 
               {submitState === "success" ? (
                 <p className="tiny" style={{ marginTop: ".8rem", color: "#0b7a3f" }}>
-                  Thank you, {fullName || "volunteer"}. Your signup is now in Sedifex, which helps us match your skills to the right project and follow up faster.
+                  Success! Your volunteer signup has been sent. Our team will contact you with next steps.
                 </p>
               ) : null}
 
               {submitState === "error" ? (
                 <p className="tiny" style={{ marginTop: ".8rem", color: "#9f1239" }}>
-                  We could not submit to Sedifex right now. Please try again in a moment.
+                  We could not submit directly to Sedifex right now. We opened WhatsApp as backup so your application can still be delivered.
                 </p>
               ) : null}
 
