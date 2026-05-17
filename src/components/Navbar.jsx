@@ -5,7 +5,6 @@ import { org } from "../data/org";
 
 const navLinks = [
   { label: "Home", to: "/" },
-  { label: "Get Involved", to: "/get-involved" },
   { label: "Gallery", to: "/photos" },
   { label: "FAQs", to: "/#frequently-asked-questions" },
   { label: "Inspiring Stories", to: "/inspiring-stories" },
@@ -43,9 +42,9 @@ export default function Navbar() {
           {navLinks.map((l) => (
             <Link key={l.to} to={l.to}>{l.label}</Link>
           ))}
-          <a className="btn btn--small" href={org.donateUrl} target="_blank" rel="noreferrer">
+          <Link className="btn btn--small" to="/get-involved">
             Donate
-          </a>
+          </Link>
         </nav>
 
         <button
@@ -66,7 +65,7 @@ export default function Navbar() {
                 {l.label}
               </Link>
             ))}
-            <a className="btn" href={org.donateUrl} target="_blank" rel="noreferrer">Donate</a>
+            <Link className="btn" to="/get-involved">Donate</Link>
           </Container>
         </div>
       )}
