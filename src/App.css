@@ -1,42 +1,106 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  min-height: 100vh;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Make the donation calls-to-action strong and readable on desktop. */
+.btn--primary,
+.nav__links .btn--primary,
+.submitButton {
+  border-color: rgba(180, 83, 9, 0.95);
+  background: linear-gradient(135deg, #f97316, #0f766e);
+  color: #ffffff;
+  box-shadow: 0 14px 32px rgba(15, 118, 110, 0.22);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.btn--primary:hover,
+.nav__links .btn--primary:hover,
+.submitButton:hover {
+  filter: brightness(1.04);
+  transform: translateY(-1px);
+}
+
+.btn--primary:disabled,
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+  transform: none;
+}
+
+.floatWrap {
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(18px, env(safe-area-inset-bottom));
+}
+
+.floatBtn {
+  color: #0f172a;
+  text-decoration: none;
+}
+
+.floatBtn--donate {
+  border-color: rgba(180, 83, 9, 0.95);
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: #ffffff;
+  box-shadow: 0 18px 42px rgba(234, 88, 12, 0.28);
+}
+
+/* Keep Donate visible on phones instead of hiding the whole nav. */
+@media (max-width: 980px) {
+  .nav__inner {
+    gap: 0.75rem;
   }
-  to {
-    transform: rotate(360deg);
+
+  .brand__sub {
+    display: none;
+  }
+
+  .nav__links {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .nav__links a:not(.btn--primary) {
+    display: none;
+  }
+
+  .nav__links .btn--primary {
+    min-height: 44px;
+    padding: 0.65rem 0.9rem;
+    white-space: nowrap;
+  }
+
+  .floatWrap {
+    left: 12px;
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    grid-template-columns: 1fr 1fr;
+    gap: 0.55rem;
+  }
+
+  .floatBtn {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.78rem 0.7rem;
+    text-align: center;
+  }
+
+  .floatBtn--donate {
+    font-size: 1rem;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@media (max-width: 420px) {
+  .brand__mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
   }
-}
 
-.card {
-  padding: 2em;
-}
+  .brand__name {
+    font-size: 0.9rem;
+  }
 
-.read-the-docs {
-  color: #888;
+  .nav__links .btn--primary {
+    padding-inline: 0.75rem;
+  }
 }
