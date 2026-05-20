@@ -26,6 +26,18 @@
   transform: none;
 }
 
+
+.donatePageButton {
+  border-color: #1d4ed8;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #ffffff;
+  box-shadow: 0 14px 32px rgba(37, 99, 235, 0.28);
+}
+
+.donatePageButton:hover {
+  filter: brightness(1.05);
+}
+
 .floatWrap {
   right: max(18px, env(safe-area-inset-right));
   bottom: max(18px, env(safe-area-inset-bottom));
