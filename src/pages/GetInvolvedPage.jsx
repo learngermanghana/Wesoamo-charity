@@ -181,7 +181,7 @@ export default function GetInvolvedPage() {
 
               {feedback ? <p className={`note ${status === "error" ? "errorText" : "successText"}`}>{feedback}</p> : null}
 
-              <button className="btn" type="submit" disabled={status === "submitting" || !canSubmit} style={{ width: "100%" }}>
+              <button className="btn donatePageButton" type="submit" disabled={status === "submitting" || !canSubmit} style={{ width: "100%" }}>
                 {status === "submitting" ? "Starting checkout…" : `Donate ${Number.isFinite(amountNumber) && amountNumber > 0 ? money(amountNumber) : ""}`}
               </button>
 
